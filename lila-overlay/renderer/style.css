@@ -51,17 +51,21 @@ body {
 /* ── 1. Main Window Container ───────────────────────────────────────────────── */
 .lila-window {
   position: relative;
-  width: 480px;
-  height: 640px;
+  width: 640px;
+  height: 600px;
   min-width: 360px;
   min-height: 480px;
   overflow: hidden;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.10);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 30px;
+  background: linear-gradient(
+    135deg,
+    rgba(120, 190, 235, 0.16),
+    rgba(60, 100, 155, 0.12)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.28);
   box-shadow:
-    0 20px 60px rgba(20, 40, 80, 0.18),
-    0 8px 25px rgba(0, 0, 0, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 20px 60px rgba(20, 50, 90, 0.20);
   isolation: isolate;
   display: flex;
   flex-direction: column;
@@ -69,44 +73,45 @@ body {
   transition: width 220ms var(--ease-smooth), height 220ms var(--ease-smooth);
 }
 
-/* ── 2. Background Image Layer (Environment Image) ─────────────────────────── */
+/* ── 2. Background Image Layer (Recognizable, 45–60% visibility) ────────────── */
 .window-background {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: url("assets/lila-environment.png");
+  background-image: url("assets/lila-room.png");
   background-size: cover;
-  background-position: center;
-  transform: scale(1.03);
-  filter: saturate(0.92) brightness(0.92);
+  background-position: 82% 38%;
+  transform: scale(1.04);
+  filter: saturate(1.10) brightness(0.92);
+  opacity: 0.55;
   pointer-events: none;
 }
 
-/* ── 3. Background Blur Layer (Frosted Glass Effect) ───────────────────────── */
+/* ── 3. Background Blur Layer (Target blur: 8–12px) ─────────────────────────── */
 .window-background-blur {
   position: absolute;
   inset: 0;
   z-index: 1;
-  backdrop-filter: blur(18px) saturate(115%);
-  -webkit-backdrop-filter: blur(18px) saturate(115%);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
   pointer-events: none;
 }
 
-/* ── 4. Glass Overlay Layer ─────────────────────────────────────────────────── */
+/* ── 4. Blue/Cyan Tinted Glass Overlay (User Spec) ─────────────────────────── */
 .window-glass {
   position: absolute;
   inset: 0;
   z-index: 2;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.17),
-    rgba(255, 255, 255, 0.08)
+    rgba(120, 190, 235, 0.16),
+    rgba(60, 100, 155, 0.12)
   );
   border: 1px solid rgba(255, 255, 255, 0.18);
   pointer-events: none;
 }
 
-/* ── 5. Subtle Ambient Lighting Layer ───────────────────────────────────────── */
+/* ── 5. Ambient Blue/Cyan Lighting Layer ────────────────────────────────────── */
 .window-light {
   position: absolute;
   inset: 0;
@@ -114,14 +119,19 @@ body {
   pointer-events: none;
   background:
     radial-gradient(
-      circle at 72% 35%,
-      rgba(92, 200, 255, 0.12),
-      transparent 35%
+      circle at 18% 18%,
+      rgba(56, 189, 248, 0.25),
+      transparent 45%
     ),
     radial-gradient(
-      circle at 80% 70%,
-      rgba(167, 139, 250, 0.08),
-      transparent 40%
+      circle at 85% 35%,
+      rgba(99, 102, 241, 0.16),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 50% 85%,
+      rgba(14, 165, 233, 0.16),
+      transparent 55%
     );
   mix-blend-mode: screen;
 }
@@ -136,15 +146,14 @@ body {
   flex-direction: column;
 }
 
-/* ── 7. Top Header (64px) ───────────────────────────────────────────────────── */
+/* ── 7. Top Header (56px) ───────────────────────────────────────────────────── */
 .top-bar {
-  height: 64px;
-  padding: 12px 16px;
+  height: 56px;
+  padding: 10px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  background: transparent;
   pointer-events: auto;
   cursor: grab;
   flex-shrink: 0;
@@ -155,37 +164,41 @@ body {
 .top-bar-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.top-avatar-wrap {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  flex-shrink: 0;
+.top-sparkle-wrap {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  filter: drop-shadow(0 0 6px rgba(192, 132, 252, 0.5));
+  transition: transform 150ms ease;
 }
 
-.top-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.top-sparkle-wrap:hover {
+  transform: scale(1.1);
+}
+
+.top-sparkle-svg {
+  width: 22px;
+  height: 22px;
 }
 
 .top-identity {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .top-name {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   color: #FFFFFF;
   line-height: 1.1;
+  letter-spacing: -0.2px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
@@ -199,14 +212,14 @@ body {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--online-green);
-  box-shadow: 0 0 6px var(--online-green);
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
 }
 
 .status-label {
   font-size: 11px;
   font-weight: 500;
-  color: var(--online-green);
+  color: rgba(255, 255, 255, 0.72);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.30);
 }
 
@@ -218,9 +231,9 @@ body {
 }
 
 .ctrl-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   border: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.75);
@@ -243,67 +256,79 @@ body {
 }
 
 .ctrl-icon {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   stroke: currentColor;
 }
 
-/* ── 8. Main Area Grid (72px Nav + 1fr Content) ─────────────────────────────── */
+/* ── 8. Main Area Grid (64px Nav + 1fr Content) ─────────────────────────────── */
 .main-grid {
   display: grid;
-  grid-template-columns: 72px 1fr;
-  height: calc(100% - 64px);
+  grid-template-columns: 64px 1fr;
+  height: calc(100% - 56px);
   position: relative;
   overflow: hidden;
 }
 
-/* ── 9. Dedicated Left Navigation Rail (72px) ───────────────────────────────── */
+/* ── 9. Minimalist Left Navigation Rail (User Spec) ───────────────────────── */
 .window-navigation {
-  width: 72px;
-  padding: 18px 10px;
+  width: 64px;
+  background: rgba(15, 40, 70, 0.10);
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+  padding: 8px 10px 18px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  border-right: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.02);
+  gap: 12px;
   z-index: 30;
   pointer-events: auto;
 }
 
 .rail-item {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.65);
   transition: all 160ms ease;
-  border: 1px solid transparent;
+  border: none;
   cursor: pointer;
   pointer-events: auto;
 }
 
 .rail-item:hover {
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.08);
   color: #FFFFFF;
 }
 
-/* Active Nav Item: Soft Cyan Capsule */
 .rail-item.active {
-  background: rgba(92, 200, 255, 0.20);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 4px 14px rgba(92, 200, 255, 0.12);
-  color: #FFFFFF;
+  background: rgba(120, 210, 255, 0.20);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(70, 190, 255, 0.15);
 }
 
-.rail-item.active .rail-icon {
+/* Home Button: Glowing Lavender/Pink Squircle matching Image 2 */
+.rail-item.rail-home {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 50%, #f472b6 100%);
+  box-shadow: 0 4px 14px rgba(192, 132, 252, 0.40);
+  color: #FFFFFF;
+  border: none;
+}
+
+.rail-item.rail-home:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(192, 132, 252, 0.55);
+}
+
+.rail-item.rail-home .home-icon {
   stroke: #FFFFFF;
-  filter: drop-shadow(0 0 6px rgba(92, 200, 255, 0.5));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 .rail-spacer { flex: 1; }
@@ -314,14 +339,6 @@ body {
   stroke: currentColor;
 }
 
-.rail-label {
-  font-size: 10.5px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.1px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.40);
-}
-
 /* ── 10. Main Character Hero Area ───────────────────────────────────────────── */
 .main-character-area {
   position: relative;
@@ -329,36 +346,103 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 0 20px;
+  padding: 0;
 }
 
 /* Ambient glow behind Lila */
 .lila-ambient {
   position: absolute;
   bottom: 120px;
-  right: 40px;
-  width: 280px;
-  height: 280px;
+  right: 50px;
+  width: 260px;
+  height: 260px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(92, 200, 255, 0.13),
+    rgba(92, 200, 255, 0.12),
     transparent 70%
   );
-  filter: blur(20px);
+  filter: blur(24px);
   opacity: 0.8;
   pointer-events: none;
   z-index: 1;
 }
 
-/* Greeting Block: naturally floating at top-right without card or border */
+/* ── Floating Quick Action Pills (Image 2 exact match) ─────────────────────── */
+.floating-pills-column {
+  position: absolute;
+  left: 14px;
+  top: 155px;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.floating-pill {
+  height: 38px;
+  border-radius: 19px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 160ms ease;
+  width: fit-content;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.floating-pill:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.32);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.floating-pill.active {
+  background: rgba(92, 200, 255, 0.32);
+  border: 1px solid rgba(147, 197, 253, 0.65);
+  box-shadow:
+    0 4px 18px rgba(92, 200, 255, 0.30),
+    inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.pill-icon {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+.pill-icon.icon-voice {
+  color: #e879f9;
+}
+
+.pill-text {
+  line-height: 1;
+  letter-spacing: 0.1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* Greeting Block: naturally floating at top-right without card or border (Image 2) */
+/* Greeting Block: smaller and further right (User Spec) */
 .window-greeting {
   position: absolute;
-  top: 28px;
-  right: 20px;
-  width: 130px;
+  top: 106px;
+  right: 30px;
+  width: 125px;
   z-index: 20;
-  text-align: right;
+  text-align: left;
   pointer-events: auto;
   cursor: grab;
 }
@@ -366,36 +450,38 @@ body {
 .window-greeting:active { cursor: grabbing; }
 
 .greeting-hey {
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 600;
   color: #FFFFFF;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
   line-height: 1.2;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 5px;
 }
 
 .heart-symbol {
   color: var(--pink-accent);
-  font-size: 18px;
+  font-size: 19px;
   text-shadow: 0 0 8px rgba(244, 114, 182, 0.6);
 }
 
 .greeting-caption {
   margin-top: 5px;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.45;
   color: rgba(255, 255, 255, 0.72);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   word-break: break-word;
 }
 
-/* 3D Character Viewport */
+/* 3D Character Viewport (Enlarged and positioned down so face is clear & zoomed) */
 .lila-character {
   position: absolute;
-  inset: 0;
+  width: 360px;
+  height: 520px;
+  bottom: 0px;
+  right: 105px;
   z-index: 5;
   pointer-events: auto;
   display: flex;
@@ -440,66 +526,58 @@ body {
   transition: height 0.08s ease;
 }
 
-/* ── 11. Floating Glass Input Capsule (Bottom) ─────────────────────────────── */
+/* ── 11. Floating Glass Input Capsule (Image 2) ─────────────────────────────── */
 .lila-input {
   position: absolute;
-  left: 18px;
-  right: 18px;
-  bottom: 18px;
-  height: 60px;
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.13);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  height: 56px;
+  border-radius: 28px;
+  background: rgba(35, 55, 85, 0.32);
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
   border: 1px solid rgba(255, 255, 255, 0.20);
-  box-shadow: 0 8px 30px rgba(20, 40, 80, 0.14);
+  box-shadow: 0 10px 30px rgba(10, 20, 40, 0.22);
   display: flex;
   align-items: center;
-  padding: 7px;
+  padding: 6px 8px;
   gap: 8px;
   z-index: 50;
   pointer-events: auto;
 }
 
-/* Input Avatar: 40px circular */
+/* Input Avatar: 38px circular with golden rim */
 .input-avatar-wrap {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   flex-shrink: 0;
   cursor: pointer;
 }
 
 .input-avatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1.5px solid rgba(250, 204, 21, 0.85);
   object-fit: cover;
   display: block;
 }
 
 .dock-avatar-dot {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--online-green);
-  border: 1.5px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 0 6px var(--online-green);
+  display: none !important;
 }
 
-/* Microphone Button: 40px circular, cyan accent */
+/* Microphone Button: 36px circular, cyan accent */
 .input-mic {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(92, 200, 255, 0.12);
-  color: #72D5FF;
-  border: 1px solid rgba(92, 200, 255, 0.18);
+  background: rgba(56, 189, 248, 0.20);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -510,43 +588,47 @@ body {
 }
 
 .input-mic:hover {
-  background: rgba(92, 200, 255, 0.22);
-  border-color: var(--primary-cyan);
-  transform: scale(1.04);
+  background: rgba(56, 189, 248, 0.32);
+  border-color: #38bdf8;
+  transform: scale(1.05);
 }
 
 .input-mic.is-muted {
-  background: rgba(248, 113, 113, 0.14);
+  background: rgba(248, 113, 113, 0.16);
   border-color: rgba(248, 113, 113, 0.40);
   color: var(--red-muted);
 }
 
-/* Headphone / Audio Profile Button: 40px circular, lavender accent */
-.input-headphone {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(167, 139, 250, 0.12);
-  color: #C4B5FD;
-  border: 1px solid rgba(167, 139, 250, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Headphone / Audio Profile Button: 36px circular, lavender/pink accent */
+.input-headphone,
+.dock-audio-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50% !important;
+  background: rgba(244, 114, 182, 0.18) !important;
+  color: #f472b6 !important;
+  border: 1px solid rgba(244, 114, 182, 0.32) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   cursor: pointer;
   flex-shrink: 0;
   transition: all 150ms ease;
   pointer-events: auto;
 }
 
-.input-headphone:hover {
-  background: rgba(167, 139, 250, 0.24);
-  border-color: var(--lavender);
-  transform: scale(1.04);
+.input-headphone:hover,
+.dock-audio-btn:hover {
+  background: rgba(244, 114, 182, 0.28) !important;
+  border-color: #f472b6 !important;
+  transform: scale(1.05);
 }
 
-.dock-btn-icon {
-  width: 19px;
-  height: 19px;
+.dock-audio-btn svg,
+.input-headphone svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: #f472b6 !important;
 }
 
 /* Transparent Text Input (No visible box) */
@@ -554,28 +636,29 @@ body {
   background: transparent;
   border: none;
   outline: none;
-  font-size: 14px;
+  font-size: 13.5px;
   color: #FFFFFF;
   flex: 1;
   min-width: 0;
-  padding: 0 4px;
+  padding: 0 6px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   pointer-events: auto;
 }
 
 .input-text::placeholder {
-  color: rgba(255, 255, 255, 0.52);
+  color: rgba(255, 255, 255, 0.55);
 }
 
-/* Send Button: 48px circular, blue -> lavender gradient */
+/* Send Button: 42px circular, purple gradient with solid paper airplane */
+.dock-send-btn,
 .input-send {
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #5CC8FF, #A78BFA);
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%);
   color: #FFFFFF;
   border: none;
-  box-shadow: 0 5px 18px rgba(92, 200, 255, 0.20);
+  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.50);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -585,18 +668,22 @@ body {
   pointer-events: auto;
 }
 
+.dock-send-btn:hover,
 .input-send:hover {
   filter: brightness(1.08);
-  transform: scale(1.04);
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(168, 85, 247, 0.65);
 }
 
+.dock-send-btn:active,
 .input-send:active {
   transform: scale(0.96);
 }
 
 .send-plane-svg {
-  width: 19px;
-  height: 19px;
+  width: 20px;
+  height: 20px;
+  transform: rotate(-35deg) translate(1px, -1px);
 }
 
 /* ── 12. Mini Mode (Spec §34) ───────────────────────────────────────────────── */

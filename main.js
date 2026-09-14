@@ -34,7 +34,7 @@ function loadConfig() {
   } catch (e) {
     console.error('[Config] Error loading config.json:', e);
   }
-  return { width: 480, height: 640, x: null, y: null, opacity: 1.0, ws_url: "ws://127.0.0.1:8765" };
+  return { width: 640, height: 600, x: null, y: null, opacity: 1.0, ws_url: "ws://127.0.0.1:8765" };
 }
 
 function saveConfig(updated) {
@@ -53,8 +53,8 @@ function createWindow() {
   const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
 
   // Default position: bottom-right corner above taskbar
-  const defaultWidth = config.width || 480;
-  const defaultHeight = config.height || 640;
+  const defaultWidth = config.width || 640;
+  const defaultHeight = config.height || 600;
   const defaultX = screenWidth - defaultWidth - 20;
   const defaultY = screenHeight - defaultHeight - 20;
 

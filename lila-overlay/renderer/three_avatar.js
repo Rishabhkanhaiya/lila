@@ -18,13 +18,11 @@ import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import { Hand as KalidoHand, Pose as KalidoPose, Utils as KalidoUtils } from 'kalidokit';
 
 // ─── Constants & Configuration ────────────────────────────────────────────────
-// Calibrated for waist-up bust portrait:
-// Lila's head is at Y=1.33 (hair top ~1.49). Hands at rest reach down to Y=0.78.
-// Legs start below hips at Y=0.84/0.70.
-// With FOV 30 and Z=1.62, vertical view is [0.65, 1.51] (head & full hands clearly visible, legs excluded).
-const DEFAULT_CAM_Z = 1.62;
-const DEFAULT_CAM_Y = 1.18;
-const DEFAULT_LOOK_Y = 1.16;
+// Calibrated for zoomed-in waist-up portrait matching Image 2 visual reference:
+// Lila positioned down with clear visible face & zoomed in
+const DEFAULT_CAM_Z = 1.02;
+const DEFAULT_CAM_Y = 1.40;
+const DEFAULT_LOOK_Y = 1.40;
 
 const MOOD_COLORS = {
   excited: { primary: 0xff2e93, secondary: 0xff70d6, light: 0xff3388 },
@@ -634,7 +632,7 @@ const cameraProximityCtrl = {
     }
 
     if (this.proximityState === 'approach') {
-      this.targetZ = 1.48;
+      this.targetZ = 0.94;
       if (Math.abs(this.currentZ - this.targetZ) < 0.015) {
         this.proximityState = 'hold';
         this.holdTimer = 0.0;
@@ -650,14 +648,14 @@ const cameraProximityCtrl = {
         this.proximityState = 'idle';
       }
     } else if (this.proximityState === 'pull_back') {
-      this.targetZ = 1.70;
+      this.targetZ = 1.14;
     } else {
       if (currentConversationState === 'user_speaking') {
-        this.targetZ = 1.54;
+        this.targetZ = 0.98;
       } else if (currentConversationState === 'focused' ||
                  currentConversationState === 'sleepy' ||
                  currentConversationState === 'error') {
-        this.targetZ = 1.66;
+        this.targetZ = 1.10;
       } else {
         this.targetZ = DEFAULT_CAM_Z;
       }
@@ -699,7 +697,7 @@ const cameraProximityCtrl = {
   },
 
   triggerStartlePullBack() {
-    this.targetZ = 1.70;
+    this.targetZ = 1.25;
     setTimeout(() => {
       if (this.proximityState === 'idle') {
         this.targetZ = DEFAULT_CAM_Z;
@@ -3028,10 +3026,10 @@ function setupRenderer(container) {
   scene = new THREE.Scene();
   scene.background = null;
 
-  const w = container.clientWidth  || 360;
-  const h = container.clientHeight || 380;
+  const w = container.clientWidth  || 330;
+  const h = container.clientHeight || 420;
 
-  // Calibrated bust portrait: head and hands clearly visible, legs excluded
+  // Calibrated bust portrait matching Image 2 visual reference:
   camera = new THREE.PerspectiveCamera(30, w / h, 0.05, 20);
   camera.position.set(0, DEFAULT_CAM_Y, DEFAULT_CAM_Z);
   camera.lookAt(0, DEFAULT_LOOK_Y, 0);
@@ -3110,10 +3108,14 @@ function adjustCameraForModel(vrmInstance) {
       const headPos = new THREE.Vector3();
       head.getWorldPosition(headPos);
       if (headPos.y > 0.4 && headPos.y < 2.5) {
-        // Frame face, hair, and upper body center-right with generous breathing room per spec (Z=1.78)
-        camera.position.set(-0.06, headPos.y - 0.05, 1.78);
-        camera.lookAt(0.04, headPos.y - 0.13, 0);
-        console.log(`[Lila VRM] 📐 Auto-calibrated camera framing: Head at Y=${headPos.y.toFixed(2)}m (Z=1.78 spacious framing)`);
+        // Frame face clearly visible, positioned down with zoom matching Image 2
+        camera.position.set(0, headPos.y - 0.02, 1.02);
+        camera.lookAt(0, headPos.y - 0.02, 0);
+        if (cameraProximityCtrl) {
+          cameraProximityCtrl.currentZ = 1.02;
+          cameraProximityCtrl.targetZ = 1.02;
+        }
+        console.log(`[Lila VRM] 📐 Auto-calibrated camera framing: Head at Y=${headPos.y.toFixed(2)}m (Z=1.02 Zoomed clear scale)`);
       }
     }
   } catch (err) {

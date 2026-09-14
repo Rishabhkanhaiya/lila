@@ -1,0 +1,24 @@
+{
+  "name": "lila-overlay",
+  "version": "1.0.0",
+  "description": "Lila Floating Desktop Companion & Reactive HUD",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "lila",
+    "companion",
+    "desktop-overlay",
+    "hud",
+    "jarvis"
+  ],
+  "author": "Antigravity & Rishabh",
+  "license": "MIT",
+  "dependencies": {
+    "@pixiv/three-vrm": "^3.5.5",
+    "electron": "^34.2.0",
+    "kalidokit": "^1.1.5",
+    "three": "^0.185.1"
+  }
+}

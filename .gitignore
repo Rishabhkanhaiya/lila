@@ -1,0 +1,83 @@
+# ── Secrets & Keys ──────────────────────────────────────────
+.env
+.env.local
+.env.*
+!.env.example
+.copilot_token
+
+# ── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+
+# ── Virtual environments ──────────────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+venv.bak/
+
+# ── Databases & user data ─────────────────────────────────────
+*.db
+*.db-wal
+*.db-shm
+jarvis_memory.db
+memory.db
+dream_vault.db
+graph_memory.db
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+logs/
+*.jsonl
+logcat*.txt
+crash*.txt
+crash*.log
+cutoff_logs.txt
+bridge_debug.log
+routing_log.jsonl
+
+# ── Temp / scratch ────────────────────────────────────────────
+*.tmp
+temp_voice_*.mp3
+temp_voice_*.wav
+*.ulaw
+scratch/
+screenshots/
+
+# ── Node / Electron ───────────────────────────────────────────
+node_modules/
+lila-overlay/node_modules/
+lila-browser-copilot/node_modules/
+dist/
+.electron-gyp/
+
+# ── IDEs ──────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+
+# ── OS files ──────────────────────────────────────────────────
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# ── Binary launchers (user builds their own exe) ──────────────
+*.exe
+
+# ── Personal data / memory ────────────────────────────────────
+data/dream_logs/
+data/checkpoints/
+browser_profile/
+chroma_vault/
+core/chroma_vault/
+core/vault_db/
+core/local_rag.db
+core/jarvis_vault.db
+core/routing_log.jsonl
+
+# ── Large model files already tracked by Git LFS (don't double-track) ──
+# Handled in .gitattributes

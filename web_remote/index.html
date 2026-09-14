@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0b10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Lila Mobile Studio — Zero-ADB Remote Link</title>
+  <link rel="stylesheet" href="/static/mobile.css?v=20260912_4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Glass Bar -->
+  <header class="top-nav">
+    <div class="logo-group">
+      <div class="glow-orb" id="status-orb"></div>
+      <div class="logo-title">
+        <span class="lila-name">LILA</span>
+        <span class="lila-sub">REMOTE STUDIO</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="btn-ui-cmd" title="Open 3D Companion UI on PC">
+        <span id="ui-btn-icon">✨</span>
+        <span id="ui-btn-label">UI</span>
+      </button>
+      <button class="icon-btn" id="btn-audio-profile" title="Toggle Output Profile (PC / Rockerz / Earbuds / Phone)">
+        <span id="profile-icon">🎧</span>
+        <span id="profile-name">Rockerz</span>
+      </button>
+      <button class="icon-btn is-active-speaker" id="btn-phone-sound" title="Toggle Phone Speaker (Stream Audio to Phone)">
+        <span id="phone-sound-icon">📱🔊</span>
+        <span id="phone-sound-status">Phone Audio</span>
+      </button>
+      <button class="icon-btn is-active-speaker" id="btn-laptop-sound" title="Laptop Sound: Active (Both UI and Mobile Lila speaking)">
+        <span id="laptop-sound-icon">💻🔊</span>
+        <span id="laptop-sound-status">Laptop Audio</span>
+      </button>
+      <button class="icon-btn" id="btn-mute-toggle" title="Toggle Microphone">
+        <span id="mute-icon">🎤</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Laptop Telemetry Ribbon -->
+  <section class="telemetry-bar">
+    <div class="telemetry-chip" id="chip-cpu">
+      <span class="label">CPU</span>
+      <span class="value" id="val-cpu">--%</span>
+    </div>
+    <div class="telemetry-chip" id="chip-ram">
+      <span class="label">RAM</span>
+      <span class="value" id="val-ram">--%</span>
+    </div>
+    <div class="telemetry-chip" id="chip-battery">
+      <span class="label">BAT</span>
+      <span class="value" id="val-bat">--%</span>
+    </div>
+    <div class="telemetry-chip flex-1" id="chip-window">
+      <span class="label">ACTIVE</span>
+      <span class="value truncate" id="val-win">Desktop</span>
+    </div>
+  </section>
+
+  <!-- Main View Container -->
+  <main class="main-container">
+
+    <!-- TAB 1: Voice & Companion -->
+    <div class="tab-panel active" id="tab-voice">
+      <div class="voice-center">
+        
+        <!-- Live Caption / Dialogue Bubble -->
+        <div class="speech-bubble" id="speech-bubble">
+          <div class="bubble-header">
+            <span class="speaker-tag" id="speaker-tag">✨ Lila</span>
+            <span class="mood-pill" id="mood-pill">idle</span>
+          </div>
+          <div class="bubble-text" id="caption-text">"Hi babe! I'm connected to your laptop. Tap and speak, or just talk!"</div>
+        </div>
+
+        <!-- Big Interactive Glowing Voice Orb -->
+        <div class="orb-wrapper">
+          <canvas id="waveform-canvas" width="300" height="300"></canvas>
+          <div class="central-orb" id="central-orb">
+            <div class="orb-inner">
+              <span class="mic-svg" id="orb-mic-icon">🎙️</span>
+            </div>
+            <div class="orb-ring ring-1"></div>
+            <div class="orb-ring ring-2"></div>
+            <div class="orb-ring ring-3"></div>
+          </div>
+        </div>
+
+        <!-- Voice Mode Selector -->
+        <div class="voice-controls">
+          <button class="toggle-mode-btn active" id="btn-mode-handsfree">
+            <span>✨ Hands-Free (VAD)</span>
+          </button>
+          <button class="toggle-mode-btn" id="btn-mode-ptt">
+            <span>🔴 Push To Talk</span>
+          </button>
+          <button class="toggle-mode-btn" id="btn-voice-ui-cmd" title="Open 3D Companion on PC">
+            <span>✨ UI</span>
+          </button>
+        </div>
+
+        <div class="ptt-hint" id="ptt-hint">Holding down: Streaming microphone to laptop...</div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Desktop Screen Mirror -->
+    <div class="tab-panel" id="tab-screen">
+      <div class="screen-header">
+        <div class="screen-title">
+          <span>🖥️ Desktop Monitor</span>
+          <span class="live-dot"></span>
+        </div>
+        <div class="screen-actions">
+          <button class="action-pill" id="btn-capture-screen">📸 Refresh Now</button>
+          <button class="action-pill" id="btn-auto-refresh">⚡ Auto (2s)</button>
+        </div>
+      </div>
+
+      <div class="screen-viewport" id="screen-viewport">
+        <!-- Floating Zoom Controls -->
+        <div class="zoom-controls" id="zoom-controls">
+          <button class="zoom-btn" id="btn-zoom-out" title="Zoom Out" aria-label="Zoom Out">−</button>
+          <button class="zoom-btn zoom-level" id="btn-zoom-reset" title="Click to Reset Zoom">100%</button>
+          <button class="zoom-btn" id="btn-zoom-in" title="Zoom In" aria-label="Zoom In">+</button>
+          <button class="zoom-btn" id="btn-zoom-hd" title="Toggle HD Screenshot">HD</button>
+          <button class="zoom-btn" id="btn-zoom-fullscreen" title="Fullscreen Lightbox View">⛶</button>
+        </div>
+
+        <!-- Zoomable & Pannable Wrapper -->
+        <div class="zoom-wrapper" id="zoom-wrapper">
+          <img id="desktop-screenshot" src="/api/screenshot" alt="Desktop Screen" loading="lazy">
+        </div>
+
+        <div class="screen-loading" id="screen-loading">
+          <div class="spinner"></div>
+          <span>Capturing desktop...</span>
+        </div>
+      </div>
+      <div class="zoom-gesture-tip">
+        <span>🔍 Pinch or drag to zoom & pan • Double-tap to toggle 2.5x</span>
+      </div>
+    </div>
+
+    <!-- TAB 3: Google Antigravity Studio -->
+    <div class="tab-panel" id="tab-antigravity">
+      <div class="agy-card">
+        <div class="agy-header">
+          <span class="agy-icon">🚀</span>
+          <div>
+            <div class="agy-title">Google Antigravity Engine</div>
+            <div class="agy-desc">Remote Prompt Engineering & Direct Dispatch</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="agy-project-select">Target Project / Workspace</label>
+          <select id="agy-project-select" class="form-select">
+            <option value="">(Auto-detect active workspace)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="agy-task-input">Task Instruction (Casual or Technical)</label>
+          <textarea id="agy-task-input" class="form-textarea" rows="4" placeholder="e.g. Add unit tests for the auth module, or fix the audio buffer starvation issue..."></textarea>
+        </div>
+
+        <div class="quick-chips">
+          <button class="chip" data-task="Review git status and explain pending changes">📋 Git Status</button>
+          <button class="chip" data-task="Run automated tests and fix any failing test">🧪 Run Tests</button>
+          <button class="chip" data-task="Check for linter errors across the project">🔍 Check Lints</button>
+        </div>
+
+        <button class="btn-execute-agy" id="btn-execute-agy">
+          <span>⚡ Execute in Google Antigravity</span>
+        </button>
+
+        <div class="agy-result-card hidden" id="agy-result-card">
+          <div class="result-title">Execution Result:</div>
+          <pre class="result-body" id="agy-result-text"></pre>
+          <div class="result-shot" id="agy-result-shot-wrap">
+            <img id="agy-result-shot" alt="Antigravity Snapshot">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Text Chat & Terminal -->
+    <div class="tab-panel" id="tab-chat">
+      <div class="chat-container">
+        <div class="chat-stream" id="chat-stream">
+          <div class="msg lila-msg">
+            <div class="msg-bubble">Hi babe! You can type anything here and I'll execute it on your laptop using my 75+ tools! 💖</div>
+          </div>
+        </div>
+
+        <div class="chat-quick-bar">
+          <button type="button" id="btn-chat-attach-path" class="btn-chat-path" title="Open Lila UI">
+            <span class="path-icon">✨</span>
+            <span class="path-label">UI</span>
+          </button>
+        </div>
+
+        <div class="chat-input-bar">
+          <button type="button" id="btn-chat-clip" class="btn-chat-clip" title="Attach & Send Lila Companion path">📎</button>
+          <input type="text" id="chat-text-input" placeholder="Type command for Lila..." autocomplete="off">
+          <button id="btn-chat-send" class="btn-send">➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: Wake-on-LAN & Simple Power Control -->
+    <div class="tab-panel" id="tab-wol">
+      <div class="wol-container">
+        <!-- Big Simple Status Banner -->
+        <div class="wol-card simple-power-card">
+          <div class="power-status-banner" id="power-status-banner">
+            <div class="status-indicator-dot" id="status-indicator-dot"></div>
+            <div class="status-text-group">
+              <h2 class="status-main-title" id="status-main-title">Checking Computer Status...</h2>
+              <p class="status-sub-desc" id="status-sub-desc">Connecting to your laptop via Tailscale...</p>
+            </div>
+            <span class="wol-status-pill checking" id="wol-status-pill">PROBING</span>
+          </div>
+
+          <!-- Live Lila Response Bubble -->
+          <div class="wol-lila-bubble" id="wol-lila-bubble" style="background: rgba(255, 42, 133, 0.1); border: 1px solid rgba(255, 42, 133, 0.3); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+            <span class="lila-bubble-avatar" style="font-size: 1.6rem; flex-shrink: 0;">🌸</span>
+            <div class="lila-bubble-text" id="wol-lila-text" style="font-size: 0.95rem; color: #ffb3d9; font-weight: 600; line-height: 1.4;">
+              "Tap 'Turn ON' or talk to me anytime! I'm right here with you."
+            </div>
+          </div>
+
+          <!-- Three Simple Action Buttons -->
+          <div class="simple-power-actions">
+            <button class="btn-power-hero turn-on" id="btn-wol-wake-wait">
+              <span class="hero-power-icon">⚡</span>
+              <div class="hero-power-labels">
+                <span class="hero-power-title">Turn ON Laptop & Start Lila</span>
+                <span class="hero-power-sub">Wakes your computer and launches all AI services in 1 tap</span>
+              </div>
+            </button>
+
+            <button class="btn-power-hero turn-off" id="btn-wol-sleep">
+              <span class="hero-power-icon">🌙</span>
+              <div class="hero-power-labels">
+                <span class="hero-power-title">Put Laptop to Sleep</span>
+                <span class="hero-power-sub">Puts computer to sleep to save power and battery</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Collapsible Advanced Hardware Info -->
+          <details class="advanced-specs-dropdown">
+            <summary>⚙️ Advanced Connection Details (Click to view)</summary>
+            <div class="wol-specs-grid" style="margin-top: 14px;">
+              <div class="wol-spec-item">
+                <span class="wol-spec-label">Target Name</span>
+                <span class="wol-spec-val" id="wol-target-name">Rishabh-Laptop</span>
+              </div>
+              <div class="wol-spec-item">
+                <span class="wol-spec-label">Tailscale IP</span>
+                <span class="wol-spec-val" id="wol-tailscale-ip">100.72.18.12</span>
+              </div>
+              <div class="wol-spec-item">
+                <span class="wol-spec-label">Home Wi-Fi IP</span>
+                <span class="wol-spec-val" id="wol-target-ip">192.168.88.204</span>
+              </div>
+              <div class="wol-spec-item">
+                <span class="wol-spec-label">Network MAC</span>
+                <span class="wol-spec-val" id="wol-target-mac">4C:23:38:76:0D:BF</span>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div class="wol-card console-card">
+          <div class="console-header">
+            <span class="console-title">Live Status Log</span>
+            <button class="btn-console-clear" id="btn-wol-clear-logs">Clear</button>
+          </div>
+          <div class="wol-console" id="wol-console-stream">
+            <div class="console-line info">[System] Ready to manage your computer.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="tab-voice">
+      <span class="nav-icon">🎙️</span>
+      <span class="nav-label">Voice</span>
+    </button>
+    <button class="nav-item" data-tab="tab-screen">
+      <span class="nav-icon">🖥️</span>
+      <span class="nav-label">Screen</span>
+    </button>
+    <button class="nav-item" data-tab="tab-antigravity">
+      <span class="nav-icon">🚀</span>
+      <span class="nav-label">Antigravity</span>
+    </button>
+    <button class="nav-item" data-tab="tab-chat">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">Chat</span>
+    </button>
+    <button class="nav-item" data-tab="tab-wol">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label">WOL</span>
+    </button>
+  </nav>
+
+
+  <!-- Fullscreen Zoom Lightbox Modal -->
+  <div class="zoom-modal hidden" id="zoom-modal">
+    <div class="zoom-modal-header">
+      <div class="zoom-modal-title">
+        <span class="zoom-modal-icon">🖥️</span>
+        <span id="zoom-modal-heading">Screen Inspector</span>
+        <span class="zoom-modal-badge" id="modal-zoom-badge">100%</span>
+      </div>
+      <div class="zoom-modal-actions">
+        <button class="modal-tool-btn" id="modal-btn-zoom-out" title="Zoom Out">−</button>
+        <button class="modal-tool-btn" id="modal-btn-zoom-reset" title="Fit to Screen">Fit</button>
+        <button class="modal-tool-btn" id="modal-btn-zoom-in" title="Zoom In">+</button>
+        <button class="modal-tool-btn close" id="modal-btn-close" title="Close Lightbox">✕</button>
+      </div>
+    </div>
+    <div class="zoom-modal-viewport" id="zoom-modal-viewport">
+      <div class="zoom-modal-wrapper" id="zoom-modal-wrapper">
+        <img id="zoom-modal-img" alt="Zoomed Screenshot">
+      </div>
+    </div>
+    <div class="zoom-modal-footer">
+      <span>Pinch or drag to explore • Double-tap to toggle 2.5x • Tap Fit to reset</span>
+    </div>
+  </div>
+
+  <script src="/static/mobile.js?v=20260912_4"></script>
+</body>
+</html>

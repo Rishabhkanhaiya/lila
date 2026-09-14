@@ -3090,16 +3090,15 @@ function setupHolographicHalos() {
 // ─── Multi-Model Manager & Dynamic Hot-Swapping ──────────────────────────────
 
 const REGISTERED_MODELS = [
-  { id: 'ana', name: 'Lila (Yellow Dress)', path: '../assets/model/ana.vrm' },
-  { id: 'nyan', name: 'Nyan-Chan (VRoid)', path: '../assets/model/nyan_chan.vrm' },
-  { id: 'lila', name: 'Lila (Original)', path: '../assets/model/lila.vrm' },
+  { id: 'ana', name: 'Lila', path: '../assets/model/ana.vrm' },
+  { id: 'nyan', name: 'Nyan-Chan', path: '../assets/model/nyan_chan.vrm' },
+  { id: 'lila_alt', name: 'Lila (Alt Outfit)', path: '../assets/model/lila.vrm' },
   { id: 'girl', name: 'Girl Next Door', path: '../assets/model/girl_next_door.vrm' },
-  { id: 'model3', name: 'Anime Character 3', path: '../assets/model/model3.vrm' },
-  { id: 'fem', name: 'Female VRoid (Jin)', path: '../assets/model/fem_vroid.vrm' }
+  { id: 'model3', name: 'Anime Character 3', path: '../assets/model/model3.vrm' }
 ];
 
 let currentModelIndex = 0;
-let currentModelName = 'Lila (Yellow Dress)';
+let currentModelName = 'Lila';
 let currentModelUrl = '../assets/model/ana.vrm';
 
 function adjustCameraForModel(vrmInstance) {

@@ -1,10 +1,10 @@
 # 🌸 Lila — AI Desktop Companion
 
 <div align="center">
-  <img src="lila_logo.png" width="140" alt="Lila Logo"/>
+  <img src="lila_logo.png" width="160" alt="Lila (Ana)"/>
   <br/><br/>
   <strong>A fully local, emotionally intelligent AI companion that lives on your Windows desktop as a beautiful 3D animated character.</strong>
-  <br/>She listens, talks, understands Hindi + English, controls your PC, and connects to your phone — all hands-free.
+  <br/>Featuring <strong>Ana</strong> as Lila's canonical 3D avatar. She listens, talks, understands Hindi + English, controls your PC, and connects to your phone — all hands-free.
   <br/><br/>
 
   ![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)
@@ -117,16 +117,13 @@ A transparent, always-on-top floating window powered by:
 - Emotion-driven poses and expressions from `lila_emotion_engine`
 
 **Available VRM Characters:**
-| File | Character |
-|---|---|
-| `lila.vrm` | Lila (default) |
-| `ana.vrm` | Ana |
-| `girl.vrm` | Girl |
-| `girl_next_door.vrm` | Girl Next Door |
-| `nyan_chan.vrm` | Nyan Chan |
-| `fem_vroid.vrm` | Fem Vroid |
-| `character3.vrm`, `model3.vrm` | Character 3 / Model 3 |
-| `one_one.glb` | One One |
+| File | Character | Description |
+|---|---|---|
+| `ana.vrm` | **Lila (Ana)** ⭐ | **Official Canonical Avatar** — Yellow dress, blonde wavy hair, blue eyes |
+| `lila.vrm` | Lila (Alt Outfit) | Alternative costume — Bomber jacket, crop top, purple twin tails |
+| `girl.vrm` / `girl_next_door.vrm` | Girl Next Door | Casual companion with off-shoulder cardigan & jeans |
+| `nyan_chan.vrm` | Nyan Chan | Playful cat-ear anime avatar with glasses & school skirt |
+| `character3.vrm`, `model3.vrm` | Character 3 / Model 3 | Stylized anime character with kimono sleeves & red sash |
 
 **Built-in Dance Routines:**
 `hiphop`, `wave_hiphop`, `samba`, `twist`, `jazz`, `party`, `rumba`, `tut_hiphop`, `step_hiphop`, `breakdance_uprock`, `random`

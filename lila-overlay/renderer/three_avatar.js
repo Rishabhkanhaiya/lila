@@ -20,9 +20,9 @@ import { Hand as KalidoHand, Pose as KalidoPose, Utils as KalidoUtils } from 'ka
 // ─── Constants & Configuration ────────────────────────────────────────────────
 // Calibrated for waist-up bust portrait matching Image 2 visual reference:
 // Headroom: top of hair ~50px below header, eyes level with Chat pill, waist meets input dock
-const DEFAULT_CAM_Z = 1.18;
-const DEFAULT_CAM_Y = 1.34;
-const DEFAULT_LOOK_Y = 1.33;
+const DEFAULT_CAM_Z = 1.20;
+const DEFAULT_CAM_Y = 1.38;
+const DEFAULT_LOOK_Y = 1.37;
 
 const MOOD_COLORS = {
   excited: { primary: 0xff2e93, secondary: 0xff70d6, light: 0xff3388 },
@@ -632,7 +632,7 @@ const cameraProximityCtrl = {
     }
 
     if (this.proximityState === 'approach') {
-      this.targetZ = 1.08;
+      this.targetZ = 1.10;
       if (Math.abs(this.currentZ - this.targetZ) < 0.015) {
         this.proximityState = 'hold';
         this.holdTimer = 0.0;
@@ -648,14 +648,14 @@ const cameraProximityCtrl = {
         this.proximityState = 'idle';
       }
     } else if (this.proximityState === 'pull_back') {
-      this.targetZ = 1.30;
+      this.targetZ = 1.32;
     } else {
       if (currentConversationState === 'user_speaking') {
-        this.targetZ = 1.12;
+        this.targetZ = 1.14;
       } else if (currentConversationState === 'focused' ||
                  currentConversationState === 'sleepy' ||
                  currentConversationState === 'error') {
-        this.targetZ = 1.25;
+        this.targetZ = 1.26;
       } else {
         this.targetZ = DEFAULT_CAM_Z;
       }
@@ -697,7 +697,7 @@ const cameraProximityCtrl = {
   },
 
   triggerStartlePullBack() {
-    this.targetZ = 1.40;
+    this.targetZ = 1.42;
     setTimeout(() => {
       if (this.proximityState === 'idle') {
         this.targetZ = DEFAULT_CAM_Z;
@@ -3124,14 +3124,14 @@ function adjustCameraForModel(vrmInstance) {
       head.getWorldPosition(headPos);
       if (headPos.y > 0.4 && headPos.y < 2.5) {
         // Frame waist-up bust portrait matching Image 2 reference:
-        // Headroom: top of hair ~50px below header, eyes level with Chat pill, waist meets input dock
-        camera.position.set(0, headPos.y - 0.10, 1.18);
-        camera.lookAt(0, headPos.y - 0.11, 0);
+        // Headroom: top of hair ~36px below header, eyes level with Chat pill, waist meets input dock
+        camera.position.set(0, headPos.y - 0.050, 1.20);
+        camera.lookAt(0, headPos.y - 0.055, 0);
         if (cameraProximityCtrl) {
-          cameraProximityCtrl.currentZ = 1.18;
-          cameraProximityCtrl.targetZ = 1.18;
+          cameraProximityCtrl.currentZ = 1.20;
+          cameraProximityCtrl.targetZ = 1.20;
         }
-        console.log(`[Lila VRM] 📐 Auto-calibrated camera framing: Head at Y=${headPos.y.toFixed(2)}m (Z=1.18 Image 2 scale)`);
+        console.log(`[Lila VRM] 📐 Auto-calibrated camera framing: Head at Y=${headPos.y.toFixed(2)}m (Z=1.20 Image 2 scale)`);
       }
     }
   } catch (err) {

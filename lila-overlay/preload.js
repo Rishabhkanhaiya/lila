@@ -27,5 +27,11 @@ contextBridge.exposeInMainWorld('lilaAPI', {
   },
   bringToFront: () => {
     ipcRenderer.send('bring-to-front');
+  },
+  minimizeWindow: () => {
+    ipcRenderer.send('minimize-window');
+  },
+  closeWindow: () => {
+    ipcRenderer.send('close-window');
   }
 });

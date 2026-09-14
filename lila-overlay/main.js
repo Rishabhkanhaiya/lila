@@ -53,8 +53,8 @@ function createWindow() {
   const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
 
   // Default position: bottom-right corner above taskbar
-  const defaultWidth = config.width || 400;
-  const defaultHeight = config.height || 620;
+  const defaultWidth = config.width || 480;
+  const defaultHeight = config.height || 600;
   const defaultX = screenWidth - defaultWidth - 20;
   const defaultY = screenHeight - defaultHeight - 20;
 
@@ -105,8 +105,15 @@ function createWindow() {
   // Default to interactive so all buttons and chat inputs respond to clicks immediately
   win.setIgnoreMouseEvents(false);
 
+  const logPath = path.join(__dirname, '..', 'scratch', 'renderer_console.log');
   win.webContents.on('console-message', (_event, level, message, line, sourceId) => {
-    console.log(`[Renderer ${level}] ${message} (${sourceId}:${line})`);
+    try { fs.appendFileSync(logPath, `[Renderer ${level}] ${message} (${sourceId}:${line})\n`); } catch(e) {}
+  });
+  win.webContents.on('did-fail-load', (_e, code, desc, url) => {
+    try { fs.appendFileSync(logPath, `[did-fail-load] ${code} ${desc} ${url}\n`); } catch(e) {}
+  });
+  win.webContents.on('render-process-gone', (_e, details) => {
+    try { fs.appendFileSync(logPath, `[render-process-gone] ${JSON.stringify(details)}\n`); } catch(e) {}
   });
 
   let selectedModel = process.env.LILA_MODEL || 'ana';
@@ -222,11 +229,12 @@ app.whenReady().then(() => {
       try {
         fs.unlinkSync(triggerPath);
         const img = await win.capturePage();
+        const pngBuf = img.toPNG();
         const outPath = path.join(__dirname, '..', 'scratch', 'lila_frame.png');
-        fs.writeFileSync(outPath, img.toPNG());
-        console.log('[Snapshot] Saved overlay frame to:', outPath);
+        fs.writeFileSync(outPath, pngBuf);
+        try { fs.appendFileSync(path.join(__dirname, '..', 'scratch', 'renderer_console.log'), `[Snapshot] Saved frame: ${pngBuf.length} bytes\n`); } catch(e) {}
       } catch (err) {
-        console.error('[Snapshot] Error taking snapshot:', err);
+        try { fs.appendFileSync(path.join(__dirname, '..', 'scratch', 'renderer_console.log'), `[Snapshot Error] ${err.message}\n`); } catch(e) {}
       }
     }
   }, 200);

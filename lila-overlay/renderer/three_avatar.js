@@ -3110,9 +3110,9 @@ function adjustCameraForModel(vrmInstance) {
       const headPos = new THREE.Vector3();
       head.getWorldPosition(headPos);
       if (headPos.y > 0.4 && headPos.y < 2.5) {
-        // Adjust camera to frame face and torso proportionally
-        camera.position.set(0, headPos.y - 0.12, DEFAULT_CAM_Z);
-        camera.lookAt(0, headPos.y - 0.14, 0);
+        // Frame face, hair, and upper body down to waist/kidney (matching modern glassmorphic card)
+        camera.position.set(0, headPos.y - 0.20, 1.62);
+        camera.lookAt(0, headPos.y - 0.22, 0);
         console.log(`[Lila VRM] 📐 Auto-calibrated camera framing: Head at Y=${headPos.y.toFixed(2)}m`);
       }
     }

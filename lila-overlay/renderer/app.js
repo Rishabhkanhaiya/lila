@@ -158,7 +158,7 @@ export function updateAudioProfileUI(profile) {
   localStorage.setItem('lila_audio_profile', profile);
 
   if (btnAudioDevice) {
-    btnAudioDevice.className = `audio-toggle-btn interactive profile-${profile}`;
+    btnAudioDevice.className = `dock-circle-btn dock-audio-btn interactive profile-${profile}`;
     btnAudioDevice.setAttribute('title', `Audio & Mic Settings (Click to select Microphone or Speakers)`);
     btnAudioDevice.setAttribute('aria-label', 'Audio & Microphone Settings');
 
@@ -543,15 +543,14 @@ function handleStateUpdate(data) {
         speechBubble.classList.add('active');
       }
     } else if (wasSpeakingBefore && !isSpeaking) {
-      // Fade out and clear caption text 1.8s after speaking genuinely finishes
+      // Return to default friendly greeting 2.5s after speaking finishes
       if (speechBubbleTimer) clearTimeout(speechBubbleTimer);
       speechBubbleTimer = setTimeout(() => {
         if (!isSpeaking) {
-          speechBubble.classList.remove('active');
           captionText = "";
-          bubbleCaption.textContent = "";
+          bubbleCaption.textContent = "How can I help you today?";
         }
-      }, 1800);
+      }, 2500);
     }
   }
 
@@ -705,6 +704,17 @@ function renderHUD() {
   // Advance phases
   rotationAngle += curOrbitSpeed * (1.0 + audioLevel * 1.5);
   pulsePhase += curPulseSpeed;
+
+  // Dynamic Soundwave Equalizer on lower-right (Glassmorphic HUD)
+  const waveBars = document.querySelectorAll('.audio-soundwave .wave-bar');
+  if (waveBars && waveBars.length > 0) {
+    const baseAudio = isSpeaking ? (0.35 + audioLevel * 0.65) : (audioLevel * 0.35);
+    waveBars.forEach((bar, idx) => {
+      const harmonic = Math.sin(pulsePhase * 3.5 + idx * 0.7) * 0.5 + 0.5;
+      const h = Math.round(6 + (harmonic * 32 * baseAudio) + (idx % 2 === 0 ? 3 : 0));
+      bar.style.height = `${Math.max(6, Math.min(42, h))}px`;
+    });
+  }
 
   const w = canvas.width;
   const h = canvas.height;

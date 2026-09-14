@@ -577,60 +577,73 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(56, 189, 248, 0.20);
+  background: rgba(56, 189, 248, 0.22);
   color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.35);
+  border: 1px solid rgba(56, 189, 248, 0.40);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: all 150ms ease;
+  transition: all 160ms ease;
   pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.22);
 }
 
 .input-mic:hover {
-  background: rgba(56, 189, 248, 0.32);
+  background: rgba(56, 189, 248, 0.35);
   border-color: #38bdf8;
-  transform: scale(1.05);
+  transform: scale(1.06);
+  box-shadow: 0 3px 12px rgba(56, 189, 248, 0.40);
+}
+
+.input-mic svg,
+.input-mic .dock-btn-icon {
+  width: 19px !important;
+  height: 19px !important;
+  stroke: #38bdf8 !important;
+  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.45));
 }
 
 .input-mic.is-muted {
-  background: rgba(248, 113, 113, 0.16);
-  border-color: rgba(248, 113, 113, 0.40);
+  background: rgba(248, 113, 113, 0.18);
+  border-color: rgba(248, 113, 113, 0.45);
   color: var(--red-muted);
 }
 
-/* Headphone / Audio Profile Button: 36px circular, lavender/pink accent */
+/* Headphone / Audio Profile Button: 38px circular, lavender/pink accent */
 .input-headphone,
 .dock-audio-btn {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50% !important;
-  background: rgba(244, 114, 182, 0.18) !important;
+  background: rgba(244, 114, 182, 0.20) !important;
   color: #f472b6 !important;
-  border: 1px solid rgba(244, 114, 182, 0.32) !important;
+  border: 1px solid rgba(244, 114, 182, 0.40) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer;
   flex-shrink: 0;
-  transition: all 150ms ease;
+  transition: all 160ms ease;
   pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(244, 114, 182, 0.22);
 }
 
 .input-headphone:hover,
 .dock-audio-btn:hover {
-  background: rgba(244, 114, 182, 0.28) !important;
+  background: rgba(244, 114, 182, 0.32) !important;
   border-color: #f472b6 !important;
-  transform: scale(1.05);
+  transform: scale(1.06);
+  box-shadow: 0 3px 12px rgba(244, 114, 182, 0.40);
 }
 
 .dock-audio-btn svg,
 .input-headphone svg {
-  width: 18px !important;
-  height: 18px !important;
+  width: 19px !important;
+  height: 19px !important;
   stroke: #f472b6 !important;
+  filter: drop-shadow(0 0 4px rgba(244, 114, 182, 0.45));
 }
 
 /* Transparent Text Input (No visible box) */
@@ -638,17 +651,17 @@ body {
   background: transparent;
   border: none;
   outline: none;
-  font-size: 13.5px;
+  font-size: 14px;
   color: #FFFFFF;
   flex: 1;
   min-width: 0;
-  padding: 0 6px;
+  padding: 0 10px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   pointer-events: auto;
 }
 
 .input-text::placeholder {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.58);
 }
 
 /* Send Button: 42px circular, purple gradient with solid paper airplane */
@@ -660,21 +673,21 @@ body {
   background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%);
   color: #FFFFFF;
   border: none;
-  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.50);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: transform 140ms ease, filter 140ms ease;
+  transition: transform 140ms ease, filter 140ms ease, box-shadow 140ms ease;
   pointer-events: auto;
 }
 
 .dock-send-btn:hover,
 .input-send:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.10);
   transform: scale(1.06);
-  box-shadow: 0 6px 18px rgba(168, 85, 247, 0.65);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.70);
 }
 
 .dock-send-btn:active,
@@ -683,9 +696,11 @@ body {
 }
 
 .send-plane-svg {
-  width: 20px;
-  height: 20px;
-  transform: rotate(-35deg) translate(1px, -1px);
+  width: 19px;
+  height: 19px;
+  fill: #FFFFFF;
+  transform: rotate(-45deg) translate(1px, 2px);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
 
 /* ── 12. Mini Mode (Spec §34) ───────────────────────────────────────────────── */

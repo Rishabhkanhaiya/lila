@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' blob: data: ws://127.0.0.1:*;">
-  <title>Lila Companion</title>
+  <title>Lila Desktop Companion</title>
   <link rel="stylesheet" href="style.css">
   <script type="importmap">
     {
@@ -19,169 +19,181 @@
 </head>
 <body>
 
-  <!-- Main Companion Window -->
-  <div id="companion-container" class="companion-window">
+  <!-- Multi-Layer Lila Window Container per Specification -->
+  <div id="companion-container" class="lila-window companion-window">
 
-    <!-- ── TOP BAR ─────────────────────────────────────────────── -->
-    <header class="top-bar interactive" title="Drag to move Lila">
-      <div class="top-bar-left">
-        <div class="top-avatar-wrap" id="header-avatar-btn" title="Lila Desktop Companion">
-          <img src="../assets/lila_logo.png" class="top-avatar-img" alt="Lila" />
-          <span class="top-avatar-ring"></span>
-        </div>
-        <div class="top-identity">
-          <span class="top-name">Lila</span>
-          <div class="top-status">
-            <span class="status-dot-pulse" id="header-status-dot"></span>
-            <span class="status-label" id="header-status-text">Online</span>
+    <!-- Layer 0: Background Environment Image (assets/lila-environment.png) -->
+    <div class="window-background"></div>
+
+    <!-- Layer 1: Background Blur (frosted glass over environment image) -->
+    <div class="window-background-blur"></div>
+
+    <!-- Layer 2: Glass Overlay (translucent specular reflection) -->
+    <div class="window-glass"></div>
+
+    <!-- Layer 3: Subtle Ambient Lighting (dual radial gradients) -->
+    <div class="window-light"></div>
+
+    <!-- Layer 10: Actual UI & Character Content -->
+    <div class="window-content">
+
+      <!-- ── TOP HEADER (64px) ─────────────────────────────────── -->
+      <header class="top-bar interactive" title="Drag to move Lila">
+        <div class="top-bar-left">
+          <div class="top-avatar-wrap" id="header-avatar-btn" title="Lila Desktop Companion">
+            <img src="../assets/lila_logo.png" class="top-avatar-img" alt="Lila" />
+          </div>
+          <div class="top-identity">
+            <span class="top-name">Lila</span>
+            <div class="top-status">
+              <span class="status-dot-pulse" id="header-status-dot"></span>
+              <span class="status-label" id="header-status-text">Online</span>
+            </div>
           </div>
         </div>
+        <div class="top-bar-controls">
+          <button type="button" class="ctrl-btn btn-pin interactive" id="btn-window-pin" aria-label="Pin on top / Mini mode" title="Pin / Mini Mode">
+            <svg viewBox="0 0 24 24" class="ctrl-icon"><path d="M12 2v8M9 4h6M8 10h8M12 14v8M10 14h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+          </button>
+          <button type="button" class="ctrl-btn btn-minimize interactive" id="btn-window-minimize" aria-label="Minimize" title="Minimize">
+            <svg viewBox="0 0 24 24" class="ctrl-icon"><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <button type="button" class="ctrl-btn btn-close interactive" id="btn-window-close" aria-label="Close" title="Close">
+            <svg viewBox="0 0 24 24" class="ctrl-icon"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- ── MAIN GRID (72px Navigation + Character Area) ───────── -->
+      <div class="main-grid">
+
+        <!-- Left Navigation Rail (Dedicated 72px column - zero overlap on Lila) -->
+        <nav class="window-navigation side-rail interactive" aria-label="Navigation">
+          <button type="button" class="rail-item active interactive" data-page="home" title="Home" aria-label="Home">
+            <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="rail-label">Home</span>
+          </button>
+          <button type="button" class="rail-item interactive" data-page="chat" title="Chat" aria-label="Chat">
+            <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="rail-label">Chat</span>
+          </button>
+          <button type="button" class="rail-item interactive" data-page="voice" title="Voice" aria-label="Voice">
+            <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+            <span class="rail-label">Voice</span>
+          </button>
+          <button type="button" class="rail-item interactive" data-page="settings" title="Settings" aria-label="Settings">
+            <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span class="rail-label">Settings</span>
+          </button>
+          <button type="button" class="rail-item interactive" data-page="memory" title="Memories" aria-label="Memories">
+            <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21h6"/></svg>
+            <span class="rail-label">Memories</span>
+          </button>
+          <div class="rail-spacer"></div>
+          <button type="button" class="rail-item rail-more interactive" data-page="more" title="More Options" aria-label="More Options">
+            <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></svg>
+            <span class="rail-label">More</span>
+          </button>
+        </nav>
+
+        <!-- Main Character Area (Hero element) -->
+        <main class="main-character-area character-area">
+
+          <!-- Ambient glow behind Lila -->
+          <div class="lila-ambient avatar-ambient-glow"></div>
+
+          <!-- Greeting block — floating naturally without card or border -->
+          <div id="speech-bubble" class="window-greeting greeting-block interactive" title="Drag to move Lila">
+            <div class="greeting-hey">Hey! <span class="heart-symbol">♡</span></div>
+            <div id="bubble-caption" class="greeting-caption">How can I<br>help you today?</div>
+            <div id="mood-badge" style="display: none;">Idle</div>
+          </div>
+
+          <!-- 3D Avatar Viewport -->
+          <div id="hud-viewport" class="lila-character hud-viewport interactive" title="Double-click to switch avatar / Drag to move">
+            <div id="three-container"></div>
+            <canvas id="hud-canvas" width="440" height="440" style="display: none;"></canvas>
+          </div>
+
+          <!-- Soundwave visualizer (active only during speech) -->
+          <div class="audio-soundwave" id="audio-soundwave" style="display: none;">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+          </div>
+
+          <!-- ── FLOATING GLASS INPUT CAPSULE ──────────────────────── -->
+          <div id="chat-drawer" class="lila-input input-dock interactive">
+            <!-- Lila Avatar Badge (40px circular) -->
+            <div class="input-avatar-wrap dock-avatar-btn interactive" id="lila-logo-badge" title="Lila (Click to switch outfit/avatar)">
+              <img src="../assets/lila_logo.png" class="input-avatar dock-avatar-img" alt="Lila" />
+              <span class="dock-avatar-dot" id="logo-status-dot"></span>
+            </div>
+
+            <!-- Microphone Button (40px circular, cyan accent) -->
+            <button type="button" id="btn-mic-mute" class="input-mic dock-circle-btn dock-mic-btn interactive" title="Mute / Unmute Microphone" aria-label="Toggle Mic Mute">
+              <svg viewBox="0 0 24 24" class="dock-btn-icon mic-active-svg" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="22"/>
+              </svg>
+              <svg viewBox="0 0 24 24" class="dock-btn-icon mic-muted-svg" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                <line x1="2" y1="2" x2="22" y2="22"/>
+                <path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/>
+                <path d="M5 10v2a7 7 0 0 0 12 5"/>
+                <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/>
+                <path d="M9 9v3a3 3 0 0 0 5.12 2.12"/>
+                <line x1="12" y1="19" x2="12" y2="22"/>
+              </svg>
+            </button>
+
+            <!-- Audio / Headphone Profile Button (40px circular, lavender accent) -->
+            <button type="button" id="btn-audio-device" class="input-headphone dock-circle-btn dock-audio-btn interactive profile-rockerz" title="Audio Hardware Settings" aria-label="Switch Audio Profile">
+              <svg viewBox="0 0 24 24" class="dock-btn-icon audio-dev-icon icon-pc" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              <svg viewBox="0 0 24 24" class="dock-btn-icon audio-dev-icon icon-rockerz" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+              </svg>
+              <svg viewBox="0 0 24 24" class="dock-btn-icon audio-dev-icon icon-earbuds" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                <circle cx="8" cy="8" r="4"/><path d="M8 12v6"/><circle cx="16" cy="8" r="4"/><path d="M16 12v6"/>
+              </svg>
+            </button>
+
+            <!-- Transparent Command Input Field -->
+            <input
+              type="text"
+              id="chat-input"
+              class="input-text dock-text-input interactive"
+              placeholder="Ask Lila anything..."
+              autocomplete="off"
+              spellcheck="false"
+            />
+
+            <!-- Send Button (48px circular, cyan → lavender gradient) -->
+            <button type="button" id="btn-send-chat" class="input-send dock-send-btn interactive" aria-label="Send message" title="Send message">
+              <svg viewBox="0 0 24 24" class="send-plane-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+
+        </main>
       </div>
-      <div class="top-bar-controls">
-        <button type="button" class="ctrl-btn btn-pin interactive" id="btn-window-pin" aria-label="Pin on top / Mini mode" title="Pin / Mini Mode">
-          <svg viewBox="0 0 24 24" class="ctrl-icon"><path d="M12 2v8M9 4h6M8 10h8M12 14v8M10 14h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
-        </button>
-        <button type="button" class="ctrl-btn btn-minimize interactive" id="btn-window-minimize" aria-label="Minimize" title="Minimize">
-          <svg viewBox="0 0 24 24" class="ctrl-icon"><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-        <button type="button" class="ctrl-btn btn-close interactive" id="btn-window-close" aria-label="Close" title="Close">
-          <svg viewBox="0 0 24 24" class="ctrl-icon"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-    </header>
 
-    <!-- ── MAIN CONTENT ──────────────────────────────────────────── -->
-    <div class="main-content">
-
-      <!-- Left Navigation Rail (Dedicated 68px column - zero overlap on Lila) -->
-      <nav class="side-rail interactive" aria-label="Navigation">
-        <button type="button" class="rail-item active interactive" data-page="home" title="Home" aria-label="Home">
-          <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          <span class="rail-label">Home</span>
-        </button>
-        <button type="button" class="rail-item interactive" data-page="chat" title="Chat" aria-label="Chat">
-          <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span class="rail-label">Chat</span>
-        </button>
-        <button type="button" class="rail-item interactive" data-page="voice" title="Voice" aria-label="Voice">
-          <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-          <span class="rail-label">Voice</span>
-        </button>
-        <button type="button" class="rail-item interactive" data-page="settings" title="Settings" aria-label="Settings">
-          <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-          <span class="rail-label">Settings</span>
-        </button>
-        <button type="button" class="rail-item interactive" data-page="memory" title="Memories" aria-label="Memories">
-          <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21h6"/></svg>
-          <span class="rail-label">Memories</span>
-        </button>
-        <div class="rail-spacer"></div>
-        <button type="button" class="rail-item rail-more interactive" data-page="more" title="More Options" aria-label="More Options">
-          <svg viewBox="0 0 24 24" class="rail-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></svg>
-          <span class="rail-label">More</span>
-        </button>
-      </nav>
-
-      <!-- Character + Greeting Area (Generous breathing room, clean transparent glass) -->
-      <main class="character-area">
-
-        <!-- Subtle ambient radial lighting per spec -->
-        <div class="avatar-ambient-glow"></div>
-
-        <!-- Greeting block — floating naturally at top-right without card or border -->
-        <div id="speech-bubble" class="greeting-block interactive" title="Drag to move Lila">
-          <div class="greeting-hey">Hey! <span class="heart-symbol">♡</span></div>
-          <div id="bubble-caption" class="greeting-caption">How can I<br>help you today?</div>
-          <div id="mood-badge" style="display: none;">Idle</div>
-        </div>
-
-        <!-- 3D Avatar Viewport -->
-        <div id="hud-viewport" class="hud-viewport interactive" title="Double-click to switch avatar / Drag to move">
-          <div id="three-container"></div>
-          <canvas id="hud-canvas" width="440" height="440" style="display: none;"></canvas>
-        </div>
-
-        <!-- Soundwave visualizer (active only during speech) -->
-        <div class="audio-soundwave" id="audio-soundwave" style="display: none;">
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-        </div>
-
-      </main>
     </div>
 
-    <!-- ── BOTTOM FLOATING GLASS INPUT DOCK ────────────────────────── -->
-    <footer id="chat-drawer" class="input-dock interactive">
-      <div class="dock-inner">
-
-        <!-- Lila Avatar Badge (40px circular) -->
-        <div class="dock-avatar-btn interactive" id="lila-logo-badge" title="Lila (Click to switch outfit/avatar)">
-          <img src="../assets/lila_logo.png" class="dock-avatar-img" alt="Lila" />
-          <span class="dock-avatar-dot" id="logo-status-dot"></span>
-        </div>
-
-        <!-- Microphone Button (40px circular, cyan accent) -->
-        <button type="button" id="btn-mic-mute" class="dock-circle-btn dock-mic-btn interactive" title="Mute / Unmute Microphone" aria-label="Toggle Mic Mute">
-          <svg viewBox="0 0 24 24" class="dock-btn-icon mic-active-svg" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" y1="19" x2="12" y2="22"/>
-          </svg>
-          <svg viewBox="0 0 24 24" class="dock-btn-icon mic-muted-svg" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-            <line x1="2" y1="2" x2="22" y2="22"/>
-            <path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/>
-            <path d="M5 10v2a7 7 0 0 0 12 5"/>
-            <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/>
-            <path d="M9 9v3a3 3 0 0 0 5.12 2.12"/>
-            <line x1="12" y1="19" x2="12" y2="22"/>
-          </svg>
-        </button>
-
-        <!-- Audio / Headphone Profile Button (40px circular, lavender accent) -->
-        <button type="button" id="btn-audio-device" class="dock-circle-btn dock-audio-btn interactive profile-rockerz" title="Audio Hardware Settings" aria-label="Switch Audio Profile">
-          <svg viewBox="0 0 24 24" class="dock-btn-icon audio-dev-icon icon-pc" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-            <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-          </svg>
-          <svg viewBox="0 0 24 24" class="dock-btn-icon audio-dev-icon icon-rockerz" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
-          </svg>
-          <svg viewBox="0 0 24 24" class="dock-btn-icon audio-dev-icon icon-earbuds" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-            <circle cx="8" cy="8" r="4"/><path d="M8 12v6"/><circle cx="16" cy="8" r="4"/><path d="M16 12v6"/>
-          </svg>
-        </button>
-
-        <!-- Command Input Field (Transparent, seamlessly integrated) -->
-        <input
-          type="text"
-          id="chat-input"
-          class="dock-text-input interactive"
-          placeholder="Ask Lila anything..."
-          autocomplete="off"
-          spellcheck="false"
-        />
-
-        <!-- Send Button (44px circular, cyan → lavender gradient) -->
-        <button type="button" id="btn-send-chat" class="dock-send-btn interactive" aria-label="Send message" title="Send message">
-          <svg viewBox="0 0 24 24" class="send-plane-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
-        </button>
-
-      </div>
-    </footer>
-
-    <!-- ── LEGACY HIDDEN ACTION BUTTONS (compat) ──────────────────── -->
+    <!-- ── LEGACY HIDDEN ACTION BUTTONS (compatibility) ──────────── -->
     <div id="quick-actions" style="display: none;">
       <button id="btn-mute" type="button"></button>
       <button id="btn-memory" type="button"></button>

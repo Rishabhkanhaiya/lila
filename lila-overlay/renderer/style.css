@@ -1,11 +1,18 @@
 /* =============================================================================
-   🌸 Lila Desktop Companion — Windows 11 Fluent Light Glass
-   "Simple like a normal desktop app, but unusually beautiful, modern, warm, and premium"
+   🌸 Lila Desktop Companion — Windows 11 Multi-Layer Glass Architecture
+   Specification:
+   .lila-window
+       ├── .window-background (assets/lila-environment.png)
+       ├── .window-background-blur
+       ├── .window-glass
+       ├── .window-light
+       └── .window-content
+               ├── .top-bar (64px)
+               └── .main-grid (72px navigation + character area)
    ============================================================================= */
 
-/* ── Color System & Tokens ─────────────────────────────────────────────────── */
+/* ── Color Tokens & Variables ──────────────────────────────────────────────── */
 :root {
-  /* Identity Colors: 60% Blue/Cyan, 30% Lavender, <=10% Pink */
   --primary-cyan:     #5CC8FF;
   --secondary-blue:   #72BFFF;
   --lavender:         #A78BFA;
@@ -14,32 +21,10 @@
   --online-green:     #4ADE80;
   --red-muted:        #f87171;
 
-  /* Typography Colors */
   --text-primary:     #FFFFFF;
-  --text-secondary:   rgba(255, 255, 255, 0.85);
-  --text-muted:       rgba(255, 255, 255, 0.65);
+  --text-secondary:   rgba(255, 255, 255, 0.72);
+  --text-muted:       rgba(255, 255, 255, 0.62);
 
-  /* Fluent Acrylic Translucent Glass Surface */
-  --glass-base:       linear-gradient(145deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.06) 100%), rgba(22, 34, 60, 0.50);
-  --glass-dock:       rgba(255, 255, 255, 0.14);
-  --glass-border:     rgba(255, 255, 255, 0.24);
-  --glass-border-sub: rgba(255, 255, 255, 0.14);
-
-  /* Elevation Shadows */
-  --shadow-window:    0 24px 64px rgba(10, 20, 45, 0.28), 0 0 50px rgba(92, 200, 255, 0.08);
-  --shadow-dock:      0 8px 30px rgba(10, 20, 45, 0.20), inset 0 1px 1px rgba(255, 255, 255, 0.25);
-  --shadow-glow:      0 4px 18px rgba(92, 200, 255, 0.25);
-  --text-shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.40);
-  --text-shadow-md:   0 2px 8px rgba(0, 0, 0, 0.45);
-
-  /* Spacing Grid (8px system) */
-  --sidebar-w:  68px;
-  --header-h:   58px;
-  --dock-h:     60px;
-  --radius-win: 28px;
-  --radius-pill: 9999px;
-
-  /* Easing */
   --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -63,65 +48,106 @@ body {
   align-items: center;
 }
 
-/* ── Main Glass Window Container ────────────────────────────────────────────── */
-.companion-window {
+/* ── 1. Main Window Container ───────────────────────────────────────────────── */
+.lila-window {
   position: relative;
   width: 480px;
   height: 640px;
-  border-radius: var(--radius-win);
+  min-width: 360px;
+  min-height: 480px;
   overflow: hidden;
-  background: var(--glass-base);
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-window), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 20px 60px rgba(20, 40, 80, 0.18),
+    0 8px 25px rgba(0, 0, 0, 0.08);
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   pointer-events: none;
-  transition: width 240ms var(--ease-smooth), height 240ms var(--ease-smooth), border-radius 240ms var(--ease-smooth);
+  transition: width 220ms var(--ease-smooth), height 220ms var(--ease-smooth);
 }
 
-/* Fallback if backdrop-filter is unsupported */
-@supports not ((-webkit-backdrop-filter: blur(24px)) or (backdrop-filter: blur(24px))) {
-  .companion-window {
-    background: rgba(30, 45, 70, 0.78);
-  }
-}
-
-/* Top specular highlight */
-.companion-window::before {
-  content: '';
+/* ── 2. Background Image Layer (Environment Image) ─────────────────────────── */
+.window-background {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.40) 25%,
-    rgba(255, 255, 255, 0.70) 50%,
-    rgba(255, 255, 255, 0.40) 75%,
-    transparent 100%
-  );
-  z-index: 100;
+  inset: 0;
+  z-index: 0;
+  background-image: url("assets/lila-environment.png");
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.03);
+  filter: saturate(0.92) brightness(0.92);
   pointer-events: none;
 }
 
-/* ── Top Header ─────────────────────────────────────────────────────────────── */
-.top-bar {
+/* ── 3. Background Blur Layer (Frosted Glass Effect) ───────────────────────── */
+.window-background-blur {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  backdrop-filter: blur(18px) saturate(115%);
+  -webkit-backdrop-filter: blur(18px) saturate(115%);
+  pointer-events: none;
+}
+
+/* ── 4. Glass Overlay Layer ─────────────────────────────────────────────────── */
+.window-glass {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.17),
+    rgba(255, 255, 255, 0.08)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+}
+
+/* ── 5. Subtle Ambient Lighting Layer ───────────────────────────────────────── */
+.window-light {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 72% 35%,
+      rgba(92, 200, 255, 0.12),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(167, 139, 250, 0.08),
+      transparent 40%
+    );
+  mix-blend-mode: screen;
+}
+
+/* ── 6. Window Content Container ────────────────────────────────────────────── */
+.window-content {
   position: relative;
-  z-index: 50;
-  height: var(--header-h);
-  flex-shrink: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── 7. Top Header (64px) ───────────────────────────────────────────────────── */
+.top-bar {
+  height: 64px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 18px 0 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid var(--glass-border-sub);
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
   pointer-events: auto;
   cursor: grab;
+  flex-shrink: 0;
 }
 
 .top-bar:active { cursor: grabbing; }
@@ -132,23 +158,21 @@ body {
   gap: 12px;
 }
 
-/* Mini avatar in header */
 .top-avatar-wrap {
-  position: relative;
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .top-avatar-img {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
 }
 
 .top-identity {
@@ -160,10 +184,9 @@ body {
 .top-name {
   font-size: 16px;
   font-weight: 600;
-  color: var(--text-primary);
-  text-shadow: var(--text-shadow-sm);
-  letter-spacing: -0.2px;
+  color: #FFFFFF;
   line-height: 1.1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 .top-status {
@@ -173,27 +196,18 @@ body {
 }
 
 .status-dot-pulse {
-  width: 6.5px;
-  height: 6.5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--online-green);
   box-shadow: 0 0 6px var(--online-green);
-  animation: statusPulse 2.5s ease-in-out infinite;
-  flex-shrink: 0;
-}
-
-@keyframes statusPulse {
-  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6); }
-  60%  { box-shadow: 0 0 0 4.5px rgba(74, 222, 128, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
 }
 
 .status-label {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--online-green);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
-  letter-spacing: 0.1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.30);
 }
 
 /* Minimalist Window Controls */
@@ -204,99 +218,95 @@ body {
 }
 
 .ctrl-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   border: none;
   background: transparent;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+  transition: background 150ms ease, color 150ms ease;
   pointer-events: auto;
 }
 
 .ctrl-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
 }
 
 .ctrl-btn.btn-close:hover {
-  background: rgba(248, 113, 113, 0.28);
+  background: rgba(248, 113, 113, 0.25);
   color: var(--red-muted);
 }
 
 .ctrl-icon {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   stroke: currentColor;
 }
 
-/* ── Main Content Region ────────────────────────────────────────────────────── */
-.main-content {
-  flex: 1;
-  display: flex;
+/* ── 8. Main Area Grid (72px Nav + 1fr Content) ─────────────────────────────── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  height: calc(100% - 64px);
+  position: relative;
   overflow: hidden;
-  min-height: 0;
 }
 
-/* ── Left Navigation Rail (Dedicated Column, 68px) ──────────────────────────── */
-.side-rail {
-  width: var(--sidebar-w);
-  flex-shrink: 0;
-  border-right: 1px solid var(--glass-border-sub);
+/* ── 9. Dedicated Left Navigation Rail (72px) ───────────────────────────────── */
+.window-navigation {
+  width: 72px;
+  padding: 18px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 14px 0 16px;
   gap: 8px;
-  pointer-events: auto;
-  position: relative;
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.02);
   z-index: 30;
-  background: rgba(0, 0, 0, 0.08);
+  pointer-events: auto;
 }
 
 .rail-item {
-  position: relative;
   width: 52px;
   height: 52px;
-  border-radius: 14px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 3px;
-  transition: all 180ms var(--ease-smooth);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  transition: all 160ms ease;
+  border: 1px solid transparent;
+  cursor: pointer;
   pointer-events: auto;
 }
 
 .rail-item:hover {
   background: rgba(255, 255, 255, 0.10);
-  color: var(--text-primary);
+  color: #FFFFFF;
 }
 
-/* Active Navigation Capsule: Soft Cyan/Blue Tint */
+/* Active Nav Item: Soft Cyan Capsule */
 .rail-item.active {
   background: rgba(92, 200, 255, 0.20);
-  border: 1px solid rgba(92, 200, 255, 0.40);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 4px 14px rgba(92, 200, 255, 0.12);
   color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(92, 200, 255, 0.18);
 }
 
 .rail-item.active .rail-icon {
   stroke: #FFFFFF;
-  filter: drop-shadow(0 0 6px rgba(92, 200, 255, 0.6));
+  filter: drop-shadow(0 0 6px rgba(92, 200, 255, 0.5));
 }
 
-.rail-spacer {
-  flex: 1;
-}
+.rail-spacer { flex: 1; }
 
 .rail-icon {
   width: 20px;
@@ -309,60 +319,58 @@ body {
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.1px;
-  text-shadow: var(--text-shadow-sm);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.40);
 }
 
-/* ── Main Character Area (Lila is Hero) ─────────────────────────────────────── */
-.character-area {
-  flex: 1;
+/* ── 10. Main Character Hero Area ───────────────────────────────────────────── */
+.main-character-area {
   position: relative;
   overflow: hidden;
-  min-width: 0;
-  /* Translucent glass background with subtle ambient radial illumination */
-  background:
-    radial-gradient(circle at 68% 46%, rgba(92, 200, 255, 0.12), transparent 55%),
-    radial-gradient(circle at 76% 66%, rgba(167, 139, 250, 0.08), transparent 50%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 20px;
 }
 
-.avatar-ambient-glow {
+/* Ambient glow behind Lila */
+.lila-ambient {
   position: absolute;
-  bottom: 60px;
-  right: 15%;
-  width: 260px;
-  height: 260px;
+  bottom: 120px;
+  right: 40px;
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
   background: radial-gradient(
-    circle at center,
-    rgba(92, 200, 255, 0.08) 0%,
-    rgba(167, 139, 250, 0.05) 50%,
+    circle,
+    rgba(92, 200, 255, 0.13),
     transparent 70%
   );
+  filter: blur(20px);
+  opacity: 0.8;
   pointer-events: none;
   z-index: 1;
-  filter: blur(28px);
 }
 
-/* ── Greeting Block (Floats naturally over glass at top-right) ──────────────── */
-.greeting-block {
+/* Greeting Block: naturally floating at top-right without card or border */
+.window-greeting {
   position: absolute;
-  top: 22px;
-  right: 24px;
+  top: 28px;
+  right: 20px;
+  width: 130px;
   z-index: 20;
   text-align: right;
   pointer-events: auto;
   cursor: grab;
-  max-width: 180px;
 }
 
-.greeting-block:active { cursor: grabbing; }
+.window-greeting:active { cursor: grabbing; }
 
 .greeting-hey {
-  font-size: 24px;
+  font-size: 23px;
   font-weight: 600;
-  color: var(--text-primary);
-  text-shadow: var(--text-shadow-md);
-  letter-spacing: -0.3px;
-  line-height: 1.15;
+  color: #FFFFFF;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  line-height: 1.2;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -371,23 +379,21 @@ body {
 
 .heart-symbol {
   color: var(--pink-accent);
-  font-size: 19px;
-  text-shadow: 0 0 10px rgba(244, 114, 182, 0.6);
+  font-size: 18px;
+  text-shadow: 0 0 8px rgba(244, 114, 182, 0.6);
 }
 
 .greeting-caption {
   margin-top: 5px;
   font-size: 14px;
-  font-weight: 400;
-  color: var(--text-secondary);
-  text-shadow: var(--text-shadow-sm);
   line-height: 1.45;
+  color: rgba(255, 255, 255, 0.72);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   word-break: break-word;
-  transition: opacity 0.25s ease;
 }
 
-/* ── 3D Viewport ───────────────────────────────────────────────────────────── */
-.hud-viewport {
+/* 3D Character Viewport */
+.lila-character {
   position: absolute;
   inset: 0;
   z-index: 5;
@@ -398,7 +404,7 @@ body {
   cursor: grab;
 }
 
-.hud-viewport:active { cursor: grabbing; }
+.lila-character:active { cursor: grabbing; }
 
 #three-container {
   width: 100%;
@@ -411,7 +417,7 @@ body {
   display: block;
 }
 
-/* ── Speech Soundwave (Subtle) ──────────────────────────────────────────────── */
+/* Speech soundwave */
 .audio-soundwave {
   position: absolute;
   bottom: 8px;
@@ -434,49 +440,44 @@ body {
   transition: height 0.08s ease;
 }
 
-/* ── Floating Glass Input Capsule (Bottom) ─────────────────────────────────── */
-.input-dock {
-  flex-shrink: 0;
-  padding: 0 18px 18px;
-  z-index: 40;
+/* ── 11. Floating Glass Input Capsule (Bottom) ─────────────────────────────── */
+.lila-input {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  height: 60px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  box-shadow: 0 8px 30px rgba(20, 40, 80, 0.14);
+  display: flex;
+  align-items: center;
+  padding: 7px;
+  gap: 8px;
+  z-index: 50;
   pointer-events: auto;
 }
 
-.dock-inner {
-  width: 100%;
-  height: var(--dock-h);
-  border-radius: 30px;
-  background: var(--glass-dock);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: var(--shadow-dock);
-  display: flex;
-  align-items: center;
-  padding: 6px 8px 6px 10px;
-  gap: 10px;
-}
-
-/* Lila Avatar Circle in Input */
-.dock-avatar-btn {
+/* Input Avatar: 40px circular */
+.input-avatar-wrap {
   position: relative;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   flex-shrink: 0;
   cursor: pointer;
-  transition: transform 180ms var(--ease-smooth);
-  pointer-events: auto;
 }
 
-.dock-avatar-btn:hover { transform: scale(1.06); }
-
-.dock-avatar-img {
-  width: 100%;
-  height: 100%;
+.input-avatar {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   object-fit: cover;
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  display: block;
 }
 
 .dock-avatar-dot {
@@ -491,55 +492,55 @@ body {
   box-shadow: 0 0 6px var(--online-green);
 }
 
-/* Circle Control Buttons (Mic, Audio) */
-.dock-circle-btn {
+/* Microphone Button: 40px circular, cyan accent */
+.input-mic {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  background: rgba(92, 200, 255, 0.12);
+  color: #72D5FF;
+  border: 1px solid rgba(92, 200, 255, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   cursor: pointer;
-  transition: all 180ms var(--ease-smooth);
-  border: 1px solid transparent;
-  outline: none;
+  flex-shrink: 0;
+  transition: all 150ms ease;
   pointer-events: auto;
 }
 
-/* Microphone Button: Soft Cyan */
-.dock-mic-btn {
-  background: rgba(92, 200, 255, 0.16);
-  border-color: rgba(92, 200, 255, 0.45);
-  color: #72D5FF;
-}
-
-.dock-mic-btn:hover {
-  background: rgba(92, 200, 255, 0.26);
+.input-mic:hover {
+  background: rgba(92, 200, 255, 0.22);
   border-color: var(--primary-cyan);
-  box-shadow: 0 0 14px rgba(92, 200, 255, 0.35);
   transform: scale(1.04);
 }
 
-.dock-mic-btn.is-muted {
-  background: rgba(248, 113, 113, 0.16);
-  border-color: rgba(248, 113, 113, 0.45);
+.input-mic.is-muted {
+  background: rgba(248, 113, 113, 0.14);
+  border-color: rgba(248, 113, 113, 0.40);
   color: var(--red-muted);
 }
 
-/* Headphone / Audio Profile Button: Lavender */
-.dock-audio-btn,
-.audio-toggle-btn {
-  background: rgba(167, 139, 250, 0.16) !important;
-  border-color: rgba(167, 139, 250, 0.45) !important;
-  color: var(--soft-purple) !important;
+/* Headphone / Audio Profile Button: 40px circular, lavender accent */
+.input-headphone {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(167, 139, 250, 0.12);
+  color: #C4B5FD;
+  border: 1px solid rgba(167, 139, 250, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 150ms ease;
+  pointer-events: auto;
 }
 
-.dock-audio-btn:hover,
-.audio-toggle-btn:hover {
-  background: rgba(167, 139, 250, 0.28) !important;
-  border-color: var(--lavender) !important;
-  box-shadow: 0 0 14px rgba(167, 139, 250, 0.35) !important;
+.input-headphone:hover {
+  background: rgba(167, 139, 250, 0.24);
+  border-color: var(--lavender);
   transform: scale(1.04);
 }
 
@@ -548,92 +549,95 @@ body {
   height: 19px;
 }
 
-/* Integrated Text Input (No dark inner box, seamless glass) */
-.dock-text-input {
-  flex: 1;
-  min-width: 0;
-  height: 40px;
+/* Transparent Text Input (No visible box) */
+.input-text {
   background: transparent;
   border: none;
   outline: none;
-  color: #FFFFFF;
-  text-shadow: var(--text-shadow-sm);
   font-size: 14px;
-  font-family: inherit;
-  font-weight: 400;
+  color: #FFFFFF;
+  flex: 1;
+  min-width: 0;
   padding: 0 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   pointer-events: auto;
 }
 
-.dock-text-input::placeholder {
-  color: rgba(255, 255, 255, 0.65);
+.input-text::placeholder {
+  color: rgba(255, 255, 255, 0.52);
 }
 
-/* Send Button: Soft Blue → Lavender Gradient Circle (44-48px) */
-.dock-send-btn {
-  width: 44px;
-  height: 44px;
+/* Send Button: 48px circular, blue -> lavender gradient */
+.input-send {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  flex-shrink: 0;
-  cursor: pointer;
-  border: none;
-  outline: none;
   background: linear-gradient(135deg, #5CC8FF, #A78BFA);
-  box-shadow: var(--shadow-glow);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 5px 18px rgba(92, 200, 255, 0.20);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFFFFF;
-  transition: transform 180ms var(--ease-smooth), box-shadow 180ms var(--ease-smooth);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 140ms ease, filter 140ms ease;
   pointer-events: auto;
 }
 
-.dock-send-btn:hover {
-  transform: scale(1.06);
-  box-shadow: 0 4px 20px rgba(92, 200, 255, 0.40);
+.input-send:hover {
+  filter: brightness(1.08);
+  transform: scale(1.04);
 }
 
-.dock-send-btn:active {
+.input-send:active {
   transform: scale(0.96);
 }
 
 .send-plane-svg {
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
 }
 
-/* ── Mini Companion Mode (Spec §29) ─────────────────────────────────────────── */
+/* ── 12. Mini Mode (Spec §34) ───────────────────────────────────────────────── */
 .companion-window.mini-mode {
   width: 340px !important;
-  height: 64px !important;
-  border-radius: 32px !important;
+  height: 62px !important;
+  border-radius: 31px !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(20px) !important;
 }
 
 .companion-window.mini-mode .top-bar,
-.companion-window.mini-mode .main-content {
+.companion-window.mini-mode .window-navigation,
+.companion-window.mini-mode .lila-character,
+.companion-window.mini-mode .window-greeting,
+.companion-window.mini-mode .lila-ambient {
   display: none !important;
 }
 
-.companion-window.mini-mode .input-dock {
-  padding: 0 !important;
-  margin: 0 !important;
+.companion-window.mini-mode .main-grid {
+  display: block !important;
   height: 100% !important;
 }
 
-.companion-window.mini-mode .dock-inner {
+.companion-window.mini-mode .lila-input {
+  position: static !important;
+  width: 100% !important;
   height: 100% !important;
   border: none !important;
-  border-radius: 32px !important;
+  box-shadow: none !important;
+  padding: 6px 8px !important;
 }
 
-/* ── Audio Settings Modal (Glassmorphism) ────────────────────────────────────── */
+/* ── 13. Audio Settings Modal ───────────────────────────────────────────────── */
 .audio-modal {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.96);
   width: 360px;
-  background: rgba(22, 32, 56, 0.94);
+  background: rgba(24, 34, 58, 0.94);
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
   border: 1px solid rgba(255, 255, 255, 0.20);
@@ -699,7 +703,7 @@ body {
   display: block;
   font-size: 11px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.55);
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -723,7 +727,7 @@ body {
   align-items: center;
   gap: 8px;
   font-size: 11px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .mic-level-bar-bg {
@@ -773,14 +777,14 @@ body {
 
 .audio-action-btn.primary:hover { filter: brightness(1.12); }
 
-/* ── Realtime Multimodal UI Tray ────────────────────────────────────────────── */
+/* ── 14. Realtime Multimodal UI Tray ────────────────────────────────────────── */
 .realtime-ui-tray {
   position: absolute;
-  top: calc(var(--header-h) + 10px);
-  left: calc(var(--sidebar-w) + 14px);
+  top: calc(64px + 10px);
+  left: calc(72px + 14px);
   right: 18px;
   max-height: 340px;
-  background: rgba(22, 32, 56, 0.94);
+  background: rgba(24, 34, 58, 0.94);
   backdrop-filter: blur(32px);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 18px;
@@ -816,12 +820,12 @@ body {
 .ui-tray-icon { font-size: 20px; }
 .ui-tray-text { display: flex; flex-direction: column; gap: 2px; }
 .ui-tray-title { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
-.ui-tray-subtitle { font-size: 11px; color: var(--text-muted); }
+.ui-tray-subtitle { font-size: 11px; color: rgba(255, 255, 255, 0.55); }
 
 .ui-tray-close-btn {
   background: rgba(255, 255, 255, 0.08);
   border: none;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.55);
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -895,7 +899,7 @@ body {
 
 .ui-card-info { display: flex; flex-direction: column; gap: 2px; }
 .ui-card-title { font-size: 12.5px; font-weight: 500; color: var(--text-primary); }
-.ui-card-desc  { font-size: 10.5px; color: var(--text-muted); }
+.ui-card-desc  { font-size: 10.5px; color: rgba(255, 255, 255, 0.55); }
 
 .ui-card-action-btn {
   font-size: 13px;
@@ -919,6 +923,6 @@ body {
   transition: width 0.1s linear;
 }
 
-/* ── Drag & Utilities ───────────────────────────────────────────────────────── */
+/* ── Utilities ──────────────────────────────────────────────────────────────── */
 body.is-dragging * { cursor: grabbing !important; }
 .hidden { display: none !important; }

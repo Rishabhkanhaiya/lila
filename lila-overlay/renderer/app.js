@@ -1700,12 +1700,32 @@ if (btnWindowClose) {
 }
 
 if (btnWindowPin) {
-  let isPinned = true;
   btnWindowPin.addEventListener('click', (e) => {
     e.stopPropagation();
-    isPinned = !isPinned;
-    btnWindowPin.style.color = isPinned ? '#5CC8FF' : '';
-    showFeedback(isPinned ? 'Pinned on top \uD83D\uDCCC' : 'Unpinned', 2000);
+    if (window.lilaAPI && window.lilaAPI.toggleMiniMode) {
+      window.lilaAPI.toggleMiniMode();
+    } else {
+      const container = document.getElementById('companion-container');
+      if (container) container.classList.toggle('mini-mode');
+    }
+  });
+}
+
+if (window.lilaAPI && window.lilaAPI.onMiniModeChanged) {
+  window.lilaAPI.onMiniModeChanged((isMini) => {
+    const container = document.getElementById('companion-container');
+    if (container) {
+      if (isMini) container.classList.add('mini-mode');
+      else container.classList.remove('mini-mode');
+    }
+  });
+}
+
+const headerAvatarBtn = document.getElementById('header-avatar-btn');
+if (headerAvatarBtn) {
+  headerAvatarBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    handleModelSwitchCommand('switch');
   });
 }
 
@@ -1719,47 +1739,24 @@ document.querySelectorAll('.rail-item').forEach((item) => {
     const page = item.getAttribute('data-page');
     if (page === 'chat' && chatInput) {
       chatInput.focus();
-      showFeedback('Chat mode \u2728', 1500);
+      showFeedback('Chat mode ✨', 1500);
     } else if (page === 'voice') {
       sendAction('toggle_voice_mode');
-      showFeedback('Voice mode \uD83C\uDFA4', 1500);
+      showFeedback('Voice conversation 🎤', 1500);
     } else if (page === 'memory') {
       sendAction('get_memory_summary');
-      showFeedback('Loading memories... \uD83E\uDDE0', 2000);
+      showFeedback('Loading memories... 🧠', 2000);
     } else if (page === 'settings') {
       toggleAudioSettingsModal();
+    } else if (page === 'more') {
+      handleModelSwitchCommand('switch');
     }
   });
 });
 
-// ─── Top Bar Drag (new top-bar element) ──────────────────────────────────────
+// ─── Top Bar Drag ─────────────────────────────────────────────────────────────
 
 const topBar = document.querySelector('.top-bar');
 if (topBar) {
   topBar.addEventListener('mousedown', handleDragStart);
 }
-
-// ─── Home Quick Action Pills ──────────────────────────────────────────────────
-
-document.querySelectorAll('.quick-action-pill').forEach((pill) => {
-  pill.addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.querySelectorAll('.quick-action-pill').forEach(p => p.classList.remove('active'));
-    pill.classList.add('active');
-    const action = pill.getAttribute('data-action');
-    if (action === 'chat' && chatInput) {
-      chatInput.focus();
-      showFeedback('Chat mode ✨', 1500);
-    } else if (action === 'voice') {
-      sendAction('toggle_voice_mode');
-      showFeedback('Voice conversation 🎤', 1500);
-    } else if (action === 'settings') {
-      toggleAudioSettingsModal();
-    } else if (action === 'memories') {
-      sendAction('get_memory_summary');
-      showFeedback('Loading memories... 🧠', 2000);
-    } else if (action === 'more') {
-      handleModelSwitchCommand('switch');
-    }
-  });
-});

@@ -3110,10 +3110,10 @@ function adjustCameraForModel(vrmInstance) {
       const headPos = new THREE.Vector3();
       head.getWorldPosition(headPos);
       if (headPos.y > 0.4 && headPos.y < 2.5) {
-        // Frame face, hair, and upper body center-right with breathing room above head
-        camera.position.set(-0.11, headPos.y - 0.07, 1.66);
-        camera.lookAt(0.08, headPos.y - 0.15, 0);
-        console.log(`[Lila VRM] 📐 Auto-calibrated camera framing: Head at Y=${headPos.y.toFixed(2)}m (center-right calibrated)`);
+        // Frame face, hair, and upper body center-right with generous breathing room per spec (Z=1.78)
+        camera.position.set(-0.06, headPos.y - 0.05, 1.78);
+        camera.lookAt(0.04, headPos.y - 0.13, 0);
+        console.log(`[Lila VRM] 📐 Auto-calibrated camera framing: Head at Y=${headPos.y.toFixed(2)}m (Z=1.78 spacious framing)`);
       }
     }
   } catch (err) {

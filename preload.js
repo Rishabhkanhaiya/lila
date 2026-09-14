@@ -33,5 +33,11 @@ contextBridge.exposeInMainWorld('lilaAPI', {
   },
   closeWindow: () => {
     ipcRenderer.send('close-window');
+  },
+  toggleMiniMode: () => {
+    ipcRenderer.send('toggle-mini-mode');
+  },
+  onMiniModeChanged: (callback) => {
+    ipcRenderer.on('mini-mode-changed', (_event, isMini) => callback(isMini));
   }
 });

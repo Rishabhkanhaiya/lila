@@ -74,13 +74,15 @@ function createWindow() {
     icon: fs.existsSync(iconPath) ? iconPath : undefined,
     width: defaultWidth,
     height: defaultHeight,
+    minWidth: 340,
+    minHeight: 60,
     x: posX,
     y: posY,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
     skipTaskbar: false,
-    resizable: false,
+    resizable: true,
     hasShadow: true,
     focusable: true,
     show: true,
@@ -210,6 +212,22 @@ ipcMain.on('minimize-window', (event) => {
 ipcMain.on('close-window', (event) => {
   const w = BrowserWindow.fromWebContents(event.sender);
   if (w && !w.isDestroyed()) w.hide();
+});
+
+let isMiniMode = false;
+let preMiniSize = [480, 640];
+ipcMain.on('toggle-mini-mode', (event) => {
+  const w = BrowserWindow.fromWebContents(event.sender);
+  if (w && !w.isDestroyed()) {
+    isMiniMode = !isMiniMode;
+    if (isMiniMode) {
+      preMiniSize = w.getSize();
+      w.setSize(360, 64, true);
+    } else {
+      w.setSize(preMiniSize[0] || 480, preMiniSize[1] || 640, true);
+    }
+    w.webContents.send('mini-mode-changed', isMiniMode);
+  }
 });
 
 ipcMain.handle('get-config', () => {

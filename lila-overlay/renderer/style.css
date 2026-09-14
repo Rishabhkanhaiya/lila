@@ -80,10 +80,10 @@ body {
   z-index: 0;
   background-image: url("assets/lila-room.png");
   background-size: cover;
-  background-position: 82% 38%;
-  transform: scale(1.04);
-  filter: saturate(1.10) brightness(0.92);
-  opacity: 0.55;
+  background-position: 85% 72%;
+  transform: scale(1.02);
+  filter: saturate(1.22) brightness(1.02);
+  opacity: 0.58;
   pointer-events: none;
 }
 
@@ -92,8 +92,8 @@ body {
   position: absolute;
   inset: 0;
   z-index: 1;
-  backdrop-filter: blur(10px) saturate(120%);
-  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  backdrop-filter: blur(8px) saturate(115%);
+  -webkit-backdrop-filter: blur(8px) saturate(115%);
   pointer-events: none;
 }
 
@@ -372,32 +372,32 @@ body {
 .floating-pills-column {
   position: absolute;
   left: 14px;
-  top: 155px;
+  top: 180px;
   z-index: 25;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   pointer-events: auto;
 }
 
 .floating-pill {
-  height: 38px;
-  border-radius: 19px;
-  padding: 0 16px;
+  height: 36px;
+  border-radius: 18px;
+  padding: 0 14px;
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  background: rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: rgba(255, 255, 255, 0.88);
+  gap: 8px;
+  background: rgba(20, 40, 70, 0.26);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.82);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 160ms ease;
   width: fit-content;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(10, 20, 40, 0.12);
 }
 
 .floating-pill:hover {
@@ -408,10 +408,10 @@ body {
 }
 
 .floating-pill.active {
-  background: rgba(92, 200, 255, 0.32);
-  border: 1px solid rgba(147, 197, 253, 0.65);
+  background: rgba(80, 160, 240, 0.32);
+  border: 1px solid rgba(140, 210, 255, 0.55);
   box-shadow:
-    0 4px 18px rgba(92, 200, 255, 0.30),
+    0 4px 18px rgba(70, 170, 255, 0.35),
     inset 0 1px 1px rgba(255, 255, 255, 0.45);
   color: #FFFFFF;
   font-weight: 600;
@@ -435,12 +435,11 @@ body {
 }
 
 /* Greeting Block: naturally floating at top-right without card or border (Image 2) */
-/* Greeting Block: smaller and further right (User Spec) */
 .window-greeting {
   position: absolute;
-  top: 106px;
-  right: 30px;
-  width: 125px;
+  top: 112px;
+  right: 28px;
+  width: 130px;
   z-index: 20;
   text-align: left;
   pointer-events: auto;
@@ -450,7 +449,7 @@ body {
 .window-greeting:active { cursor: grabbing; }
 
 .greeting-hey {
-  font-size: 22px;
+  font-size: 23px;
   font-weight: 600;
   color: #FFFFFF;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
@@ -462,26 +461,23 @@ body {
 
 .heart-symbol {
   color: var(--pink-accent);
-  font-size: 19px;
+  font-size: 20px;
   text-shadow: 0 0 8px rgba(244, 114, 182, 0.6);
 }
 
 .greeting-caption {
   margin-top: 5px;
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.45;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.74);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   word-break: break-word;
 }
 
-/* 3D Character Viewport (Enlarged and positioned down so face is clear & zoomed) */
+/* 3D Character Viewport (Full character area, framed via 3D PerspectiveCamera) */
 .lila-character {
   position: absolute;
-  width: 360px;
-  height: 520px;
-  bottom: 0px;
-  right: 105px;
+  inset: 0;
   z-index: 5;
   pointer-events: auto;
   display: flex;
@@ -529,16 +525,22 @@ body {
 /* ── 11. Floating Glass Input Capsule (Image 2) ─────────────────────────────── */
 .lila-input {
   position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
   height: 56px;
   border-radius: 28px;
-  background: rgba(35, 55, 85, 0.32);
-  backdrop-filter: blur(18px) saturate(125%);
-  -webkit-backdrop-filter: blur(18px) saturate(125%);
-  border: 1px solid rgba(255, 255, 255, 0.20);
-  box-shadow: 0 10px 30px rgba(10, 20, 40, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(65, 90, 130, 0.28) 0%,
+    rgba(35, 50, 80, 0.22) 100%
+  );
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.38),
+    0 12px 36px rgba(10, 20, 50, 0.24);
   display: flex;
   align-items: center;
   padding: 6px 8px;

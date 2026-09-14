@@ -18,11 +18,11 @@ import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import { Hand as KalidoHand, Pose as KalidoPose, Utils as KalidoUtils } from 'kalidokit';
 
 // ─── Constants & Configuration ────────────────────────────────────────────────
-// Calibrated for zoomed-in waist-up portrait matching Image 2 visual reference:
-// Lila positioned down with clear visible face & zoomed in
-const DEFAULT_CAM_Z = 1.02;
-const DEFAULT_CAM_Y = 1.40;
-const DEFAULT_LOOK_Y = 1.40;
+// Calibrated for waist-up bust portrait matching Image 2 visual reference:
+// Headroom: top of hair ~50px below header, eyes level with Chat pill, waist meets input dock
+const DEFAULT_CAM_Z = 1.18;
+const DEFAULT_CAM_Y = 1.34;
+const DEFAULT_LOOK_Y = 1.33;
 
 const MOOD_COLORS = {
   excited: { primary: 0xff2e93, secondary: 0xff70d6, light: 0xff3388 },
@@ -632,7 +632,7 @@ const cameraProximityCtrl = {
     }
 
     if (this.proximityState === 'approach') {
-      this.targetZ = 0.94;
+      this.targetZ = 1.08;
       if (Math.abs(this.currentZ - this.targetZ) < 0.015) {
         this.proximityState = 'hold';
         this.holdTimer = 0.0;
@@ -648,14 +648,14 @@ const cameraProximityCtrl = {
         this.proximityState = 'idle';
       }
     } else if (this.proximityState === 'pull_back') {
-      this.targetZ = 1.14;
+      this.targetZ = 1.30;
     } else {
       if (currentConversationState === 'user_speaking') {
-        this.targetZ = 0.98;
+        this.targetZ = 1.12;
       } else if (currentConversationState === 'focused' ||
                  currentConversationState === 'sleepy' ||
                  currentConversationState === 'error') {
-        this.targetZ = 1.10;
+        this.targetZ = 1.25;
       } else {
         this.targetZ = DEFAULT_CAM_Z;
       }
@@ -697,7 +697,7 @@ const cameraProximityCtrl = {
   },
 
   triggerStartlePullBack() {
-    this.targetZ = 1.25;
+    this.targetZ = 1.40;
     setTimeout(() => {
       if (this.proximityState === 'idle') {
         this.targetZ = DEFAULT_CAM_Z;
@@ -3026,8 +3026,8 @@ function setupRenderer(container) {
   scene = new THREE.Scene();
   scene.background = null;
 
-  const w = container.clientWidth  || 330;
-  const h = container.clientHeight || 420;
+  const w = container.clientWidth  || 576;
+  const h = container.clientHeight || 544;
 
   // Calibrated bust portrait matching Image 2 visual reference:
   camera = new THREE.PerspectiveCamera(30, w / h, 0.05, 20);
@@ -3049,6 +3049,21 @@ function setupRenderer(container) {
   container.innerHTML = '';
   container.appendChild(renderer.domElement);
 
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const rw = entry.contentRect.width;
+        const rh = entry.contentRect.height;
+        if (rw > 0 && rh > 0 && camera && renderer) {
+          camera.aspect = rw / rh;
+          camera.updateProjectionMatrix();
+          renderer.setSize(rw, rh);
+        }
+      }
+    });
+    ro.observe(container);
+  }
+
   if (typeof window !== 'undefined') {
     window.camera = camera;
     window.scene = scene;
@@ -3057,21 +3072,21 @@ function setupRenderer(container) {
 }
 
 function setupLights() {
-  // Balanced ambient light (neutral white) so anime cel-shading preserves true texture colors
-  scene.add(new THREE.AmbientLight(0xffffff, 0.42));
+  // Warm ambient light matching the cozy room
+  scene.add(new THREE.AmbientLight(0xfff5ea, 0.58));
 
-  // Key light: crisp directional light from upper front-right
-  const key = new THREE.DirectionalLight(0xffffff, 0.95);
+  // Key light: warm directional light from upper front-right
+  const key = new THREE.DirectionalLight(0xfffaed, 1.05);
   key.position.set(0.8, 1.8, 1.2);
   scene.add(key);
 
-  // Fill light: soft cool-white fill to soften harsh shadows without washing out contrast
-  const fill = new THREE.DirectionalLight(0xf2f6ff, 0.28);
+  // Fill light: soft cool-white fill to soften harsh shadows
+  const fill = new THREE.DirectionalLight(0xf0f4ff, 0.32);
   fill.position.set(-1.0, 1.2, 1.0);
   scene.add(fill);
 
   // Rim light: subtle back-light for silhouette edge definition
-  rimLight = new THREE.DirectionalLight(0xffffff, 0.30);
+  rimLight = new THREE.DirectionalLight(0xffffff, 0.35);
   rimLight.position.set(0, 1.6, -1.2);
   scene.add(rimLight);
 
@@ -3108,14 +3123,15 @@ function adjustCameraForModel(vrmInstance) {
       const headPos = new THREE.Vector3();
       head.getWorldPosition(headPos);
       if (headPos.y > 0.4 && headPos.y < 2.5) {
-        // Frame face clearly visible, positioned down with zoom matching Image 2
-        camera.position.set(0, headPos.y - 0.02, 1.02);
-        camera.lookAt(0, headPos.y - 0.02, 0);
+        // Frame waist-up bust portrait matching Image 2 reference:
+        // Headroom: top of hair ~50px below header, eyes level with Chat pill, waist meets input dock
+        camera.position.set(0, headPos.y - 0.10, 1.18);
+        camera.lookAt(0, headPos.y - 0.11, 0);
         if (cameraProximityCtrl) {
-          cameraProximityCtrl.currentZ = 1.02;
-          cameraProximityCtrl.targetZ = 1.02;
+          cameraProximityCtrl.currentZ = 1.18;
+          cameraProximityCtrl.targetZ = 1.18;
         }
-        console.log(`[Lila VRM] 📐 Auto-calibrated camera framing: Head at Y=${headPos.y.toFixed(2)}m (Z=1.02 Zoomed clear scale)`);
+        console.log(`[Lila VRM] 📐 Auto-calibrated camera framing: Head at Y=${headPos.y.toFixed(2)}m (Z=1.18 Image 2 scale)`);
       }
     }
   } catch (err) {
